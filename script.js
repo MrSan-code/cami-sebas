@@ -1,10 +1,63 @@
 function parseGuests() {
-  const params = new URLSearchParams(window.location.search);
-  let toStr = params.get('to');
+  const ALLOWED_GUESTS = [
+    "Mami", "Papi", "Gordo", "Mona+Andres", "Polita", "Nonita+Tia%20Ana+Valen",
+    "Tia%20Rosa", "Mile+Mari+Tio%20Lucho", "Tia%20Claudia+Tio%20Carlos", "Aleja+Manu",
+    "Isa+Puerquito", "Dani+Pablo", "Valen+Torres", "Lau+Clarito", "Oscar", "Migue",
+    "Kata+Bohorquez", "Caballero%20Lopez", "Gabi+El%20Cruck", "Yinnis+Oscarin",
+    "Lau+Steven", "Tatiana+Useche", "Mami+Papi", "Hermana%20Ali", "Heman-ia",
+    "Daviiid", "Tia%20Teresa", "Tia%20Lucia", "Tio%20Cesar", "Moni+Majo+Jaun",
+    "Santi", "Lore", "Mafe", "Kate", "Cami", "Majo+Daniel", "Caro+Daniel",
+    "Nata+Jhon%20Mario", "Jorge", "Valen", "Diana+Juan%20Camilo", "Daniela+Alejo",
+    "Angie+Nicolas", "Jose"
+  ];
 
-  if (!toStr) return; // No names provided
+  const search = window.location.search;
+  const invCard = document.getElementById('invCard');
+  const signature = document.querySelector('.signature');
+  const coverBottom = document.querySelector('.cover-bottom');
 
-  const names = toStr.trim().split(/\s+/).filter(Boolean);
+  const match = search.match(/[?&]to=([^&]*)/);
+  const rawTo = match ? match[1] : null;
+
+  // Validation: Only allow guests in the predefined list
+  if (!rawTo || !ALLOWED_GUESTS.includes(rawTo)) {
+    // If 'to' is present but not allowed, clean the URL
+    if (rawTo) {
+      const url = new URL(window.location);
+      url.searchParams.delete('to');
+      window.history.replaceState({}, '', url.pathname);
+    }
+
+    // Custom "No invited" state
+    const coverImg = document.querySelector('.cover-img');
+    const guestNamesEl = document.getElementById('guest-names');
+    const reservaEl = document.getElementById('cover-reserva');
+    const dateNumEl = document.querySelector('.cover-date-num');
+
+    if (coverImg) coverImg.style.filter = 'brightness(0.15) grayscale(0.5)';
+    if (guestNamesEl) guestNamesEl.style.display = 'none';
+    if (dateNumEl) dateNumEl.style.display = 'none';
+    if (reservaEl) {
+      reservaEl.textContent = 'BODA ÍNTIMA (SOLO CON INVITACIÓN)';
+      reservaEl.style.opacity = '1';
+      reservaEl.style.color = 'rgba(255,255,255,0.7)';
+    }
+
+    // Hide everything except the hero title
+    if (invCard) {
+      const sections = invCard.children;
+      for (let i = 1; i < sections.length; i++) {
+        sections[i].style.display = 'none';
+      }
+    }
+    if (signature) signature.style.display = 'none';
+    if (coverBottom) coverBottom.style.display = 'block'; // Show only the modified footer
+    return;
+  }
+
+  // Split by '+' which is our guest delimiter
+  const names = rawTo.split('+').map(n => decodeURIComponent(n).trim()).filter(Boolean);
+
   if (names.length === 0) return;
 
   const guestNamesEl = document.getElementById('guest-names');
@@ -12,14 +65,15 @@ function parseGuests() {
   const esperamosEl = document.getElementById('esperamos-text');
   const intimaEl = document.getElementById('intima-text');
 
-  let finalName = names[0];
   let isPlural = false;
   let count = names.length;
+  let finalName = names[0];
 
   if (count > 1) {
     isPlural = true;
-    const last = names.pop();
-    finalName = names.join(', ') + ' y ' + last;
+    const items = [...names];
+    const last = items.pop();
+    finalName = items.join(', ') + ' y ' + last;
   }
 
   if (guestNamesEl) guestNamesEl.textContent = finalName;
