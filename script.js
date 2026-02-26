@@ -115,10 +115,26 @@ function setupMusic() {
     }
   };
 
-  btn.addEventListener('click', togglePlay);
+  let hideTimeout;
+  const showSlider = () => {
+    control.classList.add('expanded');
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+      control.classList.remove('expanded');
+    }, 3000);
+  };
+
+  btn.addEventListener('click', (e) => {
+    togglePlay();
+    showSlider();
+  });
+
   slider.addEventListener('input', (e) => {
     music.volume = e.target.value;
+    showSlider();
   });
+
+  slider.addEventListener('change', showSlider);
 
   // 2. Interaction fallback (Reliable way for browsers)
   const startOnInteraction = () => {
