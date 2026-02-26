@@ -3,11 +3,11 @@ function parseGuests() {
     "Mami", "Papi", "Gordo", "Mona+Andres", "Polita", "Nonita+Tia%20Ana+Valen",
     "Tia%20Rosa", "Mile+Mari+Tio%20Lucho", "Tia%20Claudia+Tio%20Carlos", "Aleja+Manu",
     "Isa+Puerquito", "Dani+Pablo", "Valen+Torres", "Lau+Clarito", "Oscar", "Migue",
-    "Kata+Bohorquez", "Caballero%20Lopez", "Gabi+El%20Cruck", "Yinnis+Oscarin",
+    "Kata+Bohorquez", "Lopez", "Gabi+El%20Cruck", "Yinnis+Oscarin",
     "Lau+Steven", "Tatiana+Useche", "Mami+Papi", "Hermana%20Ali", "Heman-ia",
-    "Daviiid", "Tia%20Teresa", "Tia%20Lucia", "Tio%20Cesar", "Moni+Majo+Jaun",
+    "Daviiid", "Tia%20Teresa", "Tia%20Lucia", "Tio%20Cesar", "Moni+Majo+Juan",
     "Santi", "Lore", "Mafe", "Kate", "Cami", "Majo+Daniel", "Caro+Daniel",
-    "Nata+Jhon%20Mario", "Jorge", "Valen", "Diana+Juan%20Camilo", "Daniela+Alejo",
+    "Nata+John%20Mario", "Jorge", "Valen", "Diana+Juan%20Camilo", "Dani+Alejo",
     "Angie+Nicolas", "Jose"
   ];
 
