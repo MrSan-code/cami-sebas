@@ -75,8 +75,8 @@
             </svg>
           </div>
           <p class="section-title">Boda Íntima</p>
-          <p class="body-txt" id="intima-text">Esta invitación es muy especial.<br>Hemos preparado una celebración
-            íntima,<br>por lo que la invitación es intransferible.</p>
+          <p class="body-txt" id="intima-text">Esta invitación es muy especial. Hemos preparado una celebración
+            íntima, por lo que la invitación es intransferible y solo para adultos.</p>
 
           <div class="icon-block" style="margin-top: 50px;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
@@ -105,8 +105,8 @@
             </svg>
           </div>
           <p class="section-title">Detalles Próximamente</p>
-          <p class="body-txt">En las próximas semanas te enviaremos la<br>invitación formal con toda la
-            información:<br>lugar, horarios y más sorpresas<br>para disfrutar juntos.</p>
+          <p class="body-txt">En las próximas semanas te enviaremos la invitación formal con todos los
+            detalles:<br>Lugar, horarios y algunas sorpresas más para que las disfrutemos juntos.</p>
           <p class="body-txt" style="margin-top: 15px;">Por ahora, <strong>reserva esta fecha.</strong></p>
         </div>
 
@@ -114,27 +114,44 @@
           <img src="./assets/3.webp" alt="Foto Novios 3" class="mid-img">
         </div>
 
-        <div class="card-content" style="padding-bottom: 60px;">
-          <p class="section-title">Viajar nos enseñó que el hogar no es un lugar, sino donde estamos juntos.</p>
+        <div class="card-content-travel">
+          <p class="section-title-travel">Viajar nos enseñó que el hogar no es un lugar,<br>es donde estemos juntos.
+          </p>
           <div class="photo-collage" style="margin-top: 15px;">
-            <div class="photo-card" style="grid-column: span 2;"><img src="./assets/4.webp" alt="Nuestra foto 4"
-                loading="lazy"></div>
-            <div class="photo-card"><img src="./assets/5.webp" alt="Nuestra foto 5" loading="lazy"></div>
             <div class="photo-card"><img src="./assets/6.webp" alt="Nuestra foto 6" loading="lazy"></div>
-            <div class="photo-card" style="grid-column: span 2;"><img src="./assets/7.webp" alt="Nuestra foto 7"
+            <div class="photo-card"><img src="./assets/9.webp" alt="Nuestra foto 9" loading="lazy"></div>
+            <div class="photo-card" style="grid-column: span 2;"><img src="./assets/5.webp" alt="Nuestra foto 5"
                 loading="lazy"></div>
+            <div class="photo-card"><img src="./assets/8.webp" alt="Nuestra foto 8" loading="lazy"></div>
+            <div class="photo-card"><img src="./assets/7.webp" alt="Nuestra foto 7" loading="lazy"></div>
+
           </div>
         </div>
       </div> <!-- end inv-card -->
 
       <div class="signature">
         <span class="sig-prefix">Con amor</span><br>
-        <span class="sig-names">Cami y Sebas</span>
+        <span class="sig-names">Cami & Sebas</span>
       </div>
     </div> <!-- end inv-inner -->
   </div> <!-- end inv-page -->
 
-  <script src="./script.js?v=3"></script>
+  <!-- ===== MUSIC PLAYER ===== -->
+  <audio id="bgMusic" loop>
+    <source src="./assets/Kiss - I Was Made For Lovin' You - KissVEVO.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div class="music-control" id="musicControl">
+    <button class="music-btn" id="musicBtn" title="Play/Pause Music">
+      <span class="music-icon" id="musicIcon">♪</span>
+    </button>
+    <div class="volume-slider-wrap">
+      <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    </div>
+  </div>
+
+  <script src="./script.js?v=4"></script>
 </body>
 
 </html>
