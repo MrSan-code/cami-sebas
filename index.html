@@ -15,6 +15,10 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500&family=Cormorant+Garamond:wght@300;400&display=swap"
     rel="stylesheet" />
+  <link rel="preload" href="https://fonts.gstatic.com/s/greatvibes/v15/RWm0oL6uDs8qKG-m6Xu9vFr8.woff2" as="font"
+    type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/1.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="./assets/Kiss - I Was Made For Lovin' You - KissVEVO.mp3" as="audio">
   <link rel="stylesheet" href="./styles.css">
 </head>
 
@@ -29,7 +33,8 @@
 
         <!-- HERO / COVER IMAGE -->
         <div class="cover-section">
-          <img src="./assets/1.webp" alt="Save the date" class="cover-img">
+          <img src="./assets/1.webp" alt="Save the date" class="cover-img" fetchpriority="high" decoding="async"
+            width="460" height="650">
           <div class="cover-overlay">
             <div class="cover-top">
               <p class="cover-kicker">SAVE THE DATE</p>
@@ -91,7 +96,8 @@
         </div>
 
         <div class="mid-photo-wrap">
-          <img src="./assets/2.webp" alt="Foto Novios 2" class="mid-img">
+          <img src="./assets/2.webp" alt="Foto Novios 2" class="mid-img" loading="lazy" decoding="async" width="460"
+            height="450">
         </div>
 
         <div class="card-content">
@@ -111,19 +117,24 @@
         </div>
 
         <div class="mid-photo-wrap">
-          <img src="./assets/3.webp" alt="Foto Novios 3" class="mid-img">
+          <img src="./assets/3.webp" alt="Foto Novios 3" class="mid-img" loading="lazy" decoding="async" width="460"
+            height="450">
         </div>
 
         <div class="card-content-travel">
           <p class="section-title-travel">Viajar nos enseñó que el hogar no es un lugar,<br>es donde estemos juntos.
           </p>
           <div class="photo-collage" style="margin-top: 15px;">
-            <div class="photo-card"><img src="./assets/6.webp" alt="Nuestra foto 6" loading="lazy"></div>
-            <div class="photo-card"><img src="./assets/9.webp" alt="Nuestra foto 9" loading="lazy"></div>
+            <div class="photo-card"><img src="./assets/6.webp" alt="Nuestra foto 6" loading="lazy" decoding="async">
+            </div>
+            <div class="photo-card"><img src="./assets/9.webp" alt="Nuestra foto 9" loading="lazy" decoding="async">
+            </div>
             <div class="photo-card" style="grid-column: span 2;"><img src="./assets/5.webp" alt="Nuestra foto 5"
-                loading="lazy"></div>
-            <div class="photo-card"><img src="./assets/8.webp" alt="Nuestra foto 8" loading="lazy"></div>
-            <div class="photo-card"><img src="./assets/7.webp" alt="Nuestra foto 7" loading="lazy"></div>
+                loading="lazy" decoding="async"></div>
+            <div class="photo-card"><img src="./assets/8.webp" alt="Nuestra foto 8" loading="lazy" decoding="async">
+            </div>
+            <div class="photo-card"><img src="./assets/7.webp" alt="Nuestra foto 7" loading="lazy" decoding="async">
+            </div>
 
           </div>
         </div>
@@ -151,7 +162,7 @@
     </div>
   </div>
 
-  <script src="./script.js?v=4"></script>
+  <script src="./script.js?v=4" defer></script>
 </body>
 
 </html>
