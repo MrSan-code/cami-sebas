@@ -27,12 +27,12 @@ function parseGuests() {
   if (isPlural) {
     if (reservaEl) reservaEl.textContent = 'RESERVEN ESTA FECHA';
     if (esperamosEl) esperamosEl.innerHTML = 'Los esperamos para<br>celebrar nuestra boda';
-    if (intimaEl) intimaEl.innerHTML = `${finalName}, esta invitación es muy especial.<br>Hemos preparado una celebración íntima,<br>por lo que estas ${count} invitaciones son intransferibles.`;
+    if (intimaEl) intimaEl.innerHTML = `${finalName}, hemos preparado una celebración íntima, muy nuestra, y nada nos haría más ilusión que compartirla con ustedes. <strong>Por eso, estas ${count} invitaciones son solo para ustedes y están pensadas exclusivamente para adultos.</strong>`;
   } else {
     // Singular
     if (reservaEl) reservaEl.textContent = 'RESERVA ESTA FECHA';
     if (esperamosEl) esperamosEl.innerHTML = 'Te esperamos para<br>celebrar nuestra boda';
-    if (intimaEl) intimaEl.innerHTML = `${finalName}, esta invitación es muy especial.<br>Hemos preparado una celebración íntima,<br>por lo que la invitación es intransferible.`;
+    if (intimaEl) intimaEl.innerHTML = `${finalName}, hemos preparado una celebración íntima, muy nuestra, y nada nos haría más ilusión que compartirla contigo. <strong>Por eso, esta invitación es solo para ti y está pensada exclusivamente para adultos.</strong>`;
   }
 }
 
@@ -82,9 +82,65 @@ function setupCountdown() {
   setInterval(updateCountdown, 1000);
 }
 
+function setupMusic() {
+  const music = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicBtn');
+  const control = document.getElementById('musicControl');
+  const slider = document.getElementById('volumeSlider');
+
+  if (!music || !btn) return;
+
+  // Set initial state
+  music.currentTime = 63;
+  music.volume = 0.5;
+
+  const playMusic = () => {
+    music.play().then(() => {
+      control.classList.add('music-playing');
+    }).catch(err => {
+      console.log("Autoplay waiting for interaction...");
+    });
+  };
+
+  // 1. Try playing immediately
+  playMusic();
+
+  const togglePlay = () => {
+    if (music.paused) {
+      music.play();
+      control.classList.add('music-playing');
+    } else {
+      music.pause();
+      control.classList.remove('music-playing');
+    }
+  };
+
+  btn.addEventListener('click', togglePlay);
+  slider.addEventListener('input', (e) => {
+    music.volume = e.target.value;
+  });
+
+  // 2. Interaction fallback (Reliable way for browsers)
+  const startOnInteraction = () => {
+    if (music.paused) {
+      playMusic();
+      window.removeEventListener('click', startOnInteraction);
+      window.removeEventListener('scroll', startOnInteraction);
+      window.removeEventListener('touchstart', startOnInteraction);
+      window.removeEventListener('mousemove', startOnInteraction);
+    }
+  };
+
+  window.addEventListener('click', startOnInteraction);
+  window.addEventListener('scroll', startOnInteraction);
+  window.addEventListener('touchstart', startOnInteraction);
+  window.addEventListener('mousemove', startOnInteraction);
+}
+
 function init() {
   parseGuests();
   setupCountdown();
+  setupMusic();
 }
 
 if (document.readyState === "loading") {
@@ -92,3 +148,4 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
+
