@@ -152,7 +152,7 @@ body {
 }
 
 .cover-names {
-  font-family: 'Great Vibes', cursive;
+  font-family: 'Ephesis', cursive;
   font-size: clamp(3.8rem, 12vw, 5rem);
   font-weight: 400;
   line-height: 1;
@@ -167,7 +167,7 @@ body {
 }
 
 .cover-guest-names {
-  font-family: 'Great Vibes', cursive;
+  font-family: 'Ephesis', cursive;
   font-size: clamp(1.4rem, 6vw, 2rem);
   font-weight: 400;
   line-height: 1.1;
@@ -572,7 +572,7 @@ body {
 }
 
 .sig-names {
-  font-family: 'Great Vibes', cursive;
+  font-family: 'Ephesis', cursive;
   font-size: clamp(2rem, 8vw, 2.5rem);
   line-height: 1.2;
 }
