@@ -1,150 +1,57 @@
-# Save the date — mini sitio
+# Save the Date — Boda Cami & Sebas
 
-Mini sitio estático de **“save the date”** para boda. Es una única página en HTML, CSS y JavaScript pensada para compartirse fácilmente por WhatsApp, email o redes (enviando solo el enlace).
+Sitio web interactivo y personalizado para el **"Save the Date"** de nuestra boda. Diseñado para ser compartido fácilmente y ofrecer una experiencia única a cada invitado.
 
-## Estructura
+## ✨ Características Principales
 
-- `index.html`: contenido de la página.
-- `styles.css`: estilos y diseño (paleta, tipografías, layout).
-- `script.js`: lógica del contador regresivo.
+- **Personalización Dinámica:** Saludos y mensajes personalizados mediante parámetros en la URL.
+- **Lista de Acceso Cerrada:** Sistema de validación que solo permite ver la invitación completa a los invitados confirmados en la lista blanca (`whitelist`).
+- **Vista Restringida:** Los visitantes que no estén en la lista verán una versión elegante pero limitada (portada oscurecida con mensaje de "Boda Íntima").
+- **Reproductor de Música:** Fondo musical interactivo con controles de reproducción y volumen. El reproductor se oculta automáticamente tras la interacción para no estorbar el diseño.
+- **Intro de Bienvenida:** Animación de carga con el logo personalizado que da paso a la invitación.
+- **Contador Regresivo:** Visualización en tiempo real de los días, horas, minutos y segundos que faltan para el gran día.
+- **Galería de Fotos:** Collage de momentos especiales integrado en el diseño.
+- **Optimización de Carga:** Uso de formatos modernos (WebP), carga diferida (lazy loading) y pre-carga de recursos críticos para asegurar una experiencia fluida.
 
-No hay dependencias ni build: solo son archivos estáticos.
+## 📁 Estructura del Proyecto
 
-## Cómo personalizar
+- `index.html`: Estructura semántica, carga de fuentes y contenedores principales.
+- `styles.css`: Sistema de diseño basado en variables, animaciones personalizadas y diseño responsivo premium.
+- `script.js`: Lógica de personalización, validación de invitados, contador regresivo y controlador de música.
+- `/assets`: Repositorio de imágenes optimizadas (WebP), música (MP3) y el logo oficial.
 
-Abre `index.html` y busca:
+## 🛠️ Cómo Funciona la Personalización
 
-- **Nombres**  
-  - Dentro del `header`:
-    - `Sebas &amp; Cami` en el título principal.
-  - En el `footer`:
-    - `Sebas &amp; Cami` en el texto final.  
-  Sustituye esos textos por los nombres tal como quieres que aparezcan.
+El sitio utiliza el parámetro `?to=` en la URL para identificar a los invitados.
 
-- **Fecha y ciudad**  
-  En la sección de fecha:
+### Reglas de los Enlaces:
+1. **Separador de invitados:** Usa el símbolo `+`.
+2. **Espacios en nombres:** Usa espacios normales o `%20`.
+3. **Whitelist:** Solo los strings exactos definidos en la constante `ALLOWED_GUESTS` de `script.js` tendrán acceso total.
 
-  ```html
-  <span class="date-day">Sábado</span>
-  <span class="date-number">21</span>
-  <span class="date-month-year">noviembre 2026</span>
-  <p class="date-city">Ciudad / País</p>
-  ```
+**Ejemplos de URL:**
+- `.../index.html?to=Mami+Papi` -> Saludo: "Mami y Papi".
+- `.../index.html?to=Nonita+Tia%20Ana+Valen` -> Saludo: "Nonita, Tia Ana y Valen".
 
-  Cambia el día de la semana, número, mes/año y ciudad/país según corresponda.
+### Comportamiento según el Invitado:
+- **Invitado válido:** Se muestra la invitación completa, fotos, mapa, contador y firma con marca de agua.
+- **Invitado no válido / Sin parámetro:** Se oscurece la imagen principal y se muestra el mensaje "BODA ÍNTIMA (SOLO CON INVITACIÓN)".
 
-- **Mensaje**  
-  En la sección `Con cariño`, adapta los párrafos a tu propio texto manteniendo la idea de que los invitados **reserven la fecha**.
+## 🎵 Control de Música
 
-- **Texto de invitados (evento pequeño y personal)**  
-  Hay una línea con el id `invitee-line` que el JavaScript sobrescribe según la URL. El texto por defecto dice que es un evento pequeño y muy personal y que la invitación es intransferible.
+- **Autoplay:** La música intenta reproducirse automáticamente al primer gesto del usuario (scroll o click).
+- **Controles:** Ubicados en la esquina inferior derecha. El deslizador de volumen se expande al click y se contrae automáticamente tras 3 segundos de inactividad.
 
-  Si quieres cambiar el tono, edita el contenido de ese `<p>` en `index.html` o ajusta el mensaje directamente en `script.js`.
+## 🎨 Diseño y Tipografía
 
-### Invitados según la URL
+- **Fuentes:** 
+  - **Ephesis:** Utilizada para los nombres y caligrafía principal.
+  - **Montserrat / Playfair Display / Inter / Cormorant Garamond:** Combinación para textos elegantes y legibilidad.
+- **Paleta:** Tonos crema, oro y negro con transparencias y desenfoques (*backdrop-filter*).
 
-El sitio personaliza el mensaje de a quién va dirigida la invitación leyendo el último segmento de la URL.
+## 🚀 Publicación y Uso
 
-- Ejemplos:
-  - `https://misavethedate.com/` → mensaje genérico: “Esta invitación es para ti…”
-  - `https://misavethedate.com/Pablo` → “Esta invitación es solo para Pablo… no es transferible ni extensible a más personas.”
-  - `https://misavethedate.com/Pablo+Dani` → “Esta invitación es para Pablo y Dani…”
+El sitio es 100% estático. Se puede subir a cualquier servicio como GitHub Pages, Netlify o Vercel simplemente arrastrando la carpeta. Asegúrate de que los archivos en `/assets` mantengan sus nombres originales para que las referencias no se rompan.
 
-Reglas:
-
-- El código toma el último segmento de la ruta (`window.location.pathname`), lo parte por `+` y usa esos trozos como nombres.
-- Puedes usar `%20` o `-` para espacios, por ejemplo:
-  - `/Juan-Perez` o `/Juan%20Perez`
-  - `/Pablo+Dani` para dos personas.
-
-Esto funciona muy bien si publicas el sitio en un dominio raíz (`https://misavethedate.com`).  
-Si usas un subpath (por ejemplo GitHub Pages `https://usuario.github.io/save-the-date/`), el último segmento se usará como nombres:
-
-- `https://usuario.github.io/save-the-date/` → genérico.
-- `https://usuario.github.io/save-the-date/Pablo+Dani` → personalizado.
-
-### Contador regresivo
-
-El contador usa un atributo en el HTML:
-
-```html
-<div
-  class="countdown"
-  id="countdown"
-  data-target-date="2026-11-21T17:00:00"
->
-  ...
-</div>
-```
-
-- Cambia el valor de `data-target-date` por la fecha y hora de tu boda en formato ISO:
-  - `AAAA-MM-DDTHH:MM:SS`
-  - Ejemplo: `2026-04-18T16:30:00`
-
-El script (`script.js`) leerá automáticamente este valor y actualizará el contador.
-
-### Colores y tipografías
-
-En `styles.css` puedes ajustar la paleta y fuentes modificando las variables al inicio:
-
-```css
-:root {
-  --color-bg: #faf7f4;
-  --color-bg-alt: #ffffff;
-  --color-accent: #e4bdb6;
-  --color-text-main: #2f2a28;
-  --color-text-soft: #6b615b;
-  /* ... */
-}
-```
-
-- Cambia `--color-accent` para probar otros tonos (por ejemplo, un verde, azul, etc.).
-- Si quieres usar otras tipografías, cambia los `link` de Google Fonts en `index.html` y las variables `--font-heading` y `--font-body` en `styles.css`.
-
-## Cómo ver el sitio en local
-
-La forma más simple:
-
-1. Abre la carpeta del proyecto.
-2. Haz doble clic en `index.html` para abrirlo en tu navegador.
-
-O, si usas un servidor local (por ejemplo con VS Code Live Server), apunta a `index.html`.
-
-## Cómo publicarlo (enviar el link a tus invitados)
-
-Puedes usar cualquier hosting estático. Tres opciones muy sencillas:
-
-### 1. GitHub Pages
-
-1. Crea un repositorio nuevo en GitHub.
-2. Sube los archivos (`index.html`, `styles.css`, `script.js`, `README.md`).
-3. En GitHub, ve a **Settings → Pages**.
-4. En “Branch”, selecciona `main` y la carpeta `/root`, guarda.
-5. GitHub generará una URL del tipo:
-   - `https://tu-usuario.github.io/nombre-del-repo/`
-
-Ese enlace es el que puedes compartir.
-
-### 2. Netlify (muy simple, con arrastrar y soltar)
-
-1. Ve a `https://app.netlify.com/` y crea una cuenta (o usa GitHub login).
-2. En el panel, usa la opción **“Deploy site” → “Drag and drop your site folder”**.
-3. Arrastra la carpeta del proyecto (con `index.html` dentro).
-4. Netlify publicará tu sitio y te dará una URL como:
-   - `https://nombre-aleatorio.netlify.app`
-5. Puedes cambiar el nombre del sitio desde la configuración de Netlify si quieres algo más personalizado.
-
-### 3. Vercel
-
-1. Ve a `https://vercel.com/` y crea cuenta (puede ser con GitHub).
-2. Crea un nuevo proyecto desde el repositorio de GitHub donde tengas este código **o** usa la opción de subir un proyecto estático.
-3. Vercel generará una URL:
-   - `https://nombre-del-proyecto.vercel.app`
-
-## Siguiente paso
-
-1. Personaliza nombres, fecha, ciudad y textos.
-2. Revisa que el contador muestre el tiempo correcto.
-3. Prueba el enlace en uno o dos móviles.
-4. Cuando te guste cómo se ve, ¡envía el link a tus invitados!
-
+---
+*Hecho con ❤️ para la boda de Cami & Sebas.*
