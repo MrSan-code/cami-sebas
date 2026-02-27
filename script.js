@@ -207,10 +207,21 @@ function setupMusic() {
   window.addEventListener('mousemove', startOnInteraction);
 }
 
+function handleLoader() {
+  const loader = document.getElementById('pageLoader');
+  if (!loader) return;
+
+  // Add a small delay to appreciate the logo
+  setTimeout(() => {
+    loader.classList.add('fade-out');
+  }, 1500); // 1.5 seconds of logo intro
+}
+
 function init() {
   parseGuests();
   setupCountdown();
   setupMusic();
+  handleLoader();
 }
 
 if (document.readyState === "loading") {
