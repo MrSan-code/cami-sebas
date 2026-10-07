@@ -1,5 +1,5 @@
-// Phone number (with country code, digits only, e.g. "573001234567") that receives
-// the "mission accepted" WhatsApp message. Empty lets the guest pick the chat.
+// Fallback WhatsApp number (country code + digits) for the "mission accepted" message.
+// Each page sets its own on the share link via data-phone; empty lets the guest pick the chat.
 const WHATSAPP_NUMBER = '';
 
 const NO_LABELS = [
@@ -191,7 +191,8 @@ function setupAccept() {
 
   if (share) {
     const text = share.dataset.text || '';
-    share.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    const phone = share.dataset.phone || WHATSAPP_NUMBER;
+    share.href = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   }
 
   yes.addEventListener('click', () => {
