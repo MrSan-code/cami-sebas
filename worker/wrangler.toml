@@ -1,0 +1,17 @@
+name = "camiysebas-juegos"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# Served on the same domain as the site, so the games call /api/* with no CORS.
+routes = [
+  { pattern = "camiysebas.online/api/*", zone_name = "camiysebas.online" }
+]
+
+[vars]
+ALLOWED_ORIGINS = "https://camiysebas.online,https://www.camiysebas.online"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "camiysebas-juegos"
+# Filled in after `wrangler d1 create camiysebas-juegos`
+database_id = "335893fa-2ba7-4005-b86a-d448b9143865"

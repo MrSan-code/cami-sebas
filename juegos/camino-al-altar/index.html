@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Camino al altar — Cami &amp; Sebas</title>
+  <meta name="description" content="¿Llegas a tiempo al altar? Un juego de la boda de Cami &amp; Sebas.">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="Camino al altar">
+  <meta property="og:description" content="¿Llegas a tiempo al altar? Cami &amp; Sebas, 14.11.2026">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <link rel="icon" type="image/webp" href="../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="preload" href="../../assets/juegos/sebas.webp" as="image">
+  <link rel="stylesheet" href="../juegos.css?v=9">
+</head>
+
+<body>
+  <main class="sheet game">
+    <header class="hud">
+      <a class="hud-back" href="../" data-keep-query>← Juegos</a>
+      <p class="hud-score"><b id="score">0</b><span>Puntos</span></p>
+      <div class="hud-side">
+        <p class="hud-info" id="best"></p>
+        <button class="hud-sound" type="button" data-sound-toggle>♪</button>
+      </div>
+    </header>
+
+    <div class="stage" id="stage">
+      <canvas id="canvas" aria-label="Zona de juego"></canvas>
+      <p class="chip is-fleeting" id="toast" hidden></p>
+      <p class="hint" id="hint" hidden>Toca para saltar</p>
+
+      <section class="overlay" id="startPanel">
+        <div class="overlay-inner">
+          <img class="overlay-face" src="../../assets/juegos/sebas.webp" alt="" width="235" height="320">
+          <p class="eyebrow" data-guest="{names}, ayuden a Sebas">Ayuda a Sebas</p>
+          <h1 class="script-title">Camino al altar</h1>
+          <ul class="rules">
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Toca la pantalla para que Sebas <b>salte</b>.</span></li>
+            <li><img src="../../assets/juegos/sprites/arco.svg" alt="" width="28" height="28"> <span>Pasa por el centro de cada <b>arco</b> de flores.</span></li>
+            <li><img src="../../assets/juegos/sprites/anillo.svg" alt="" width="28" height="28"> <span>Cada <b>anillo</b> que recojas suma 3.</span></li>
+          </ul>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="startBtn" type="button">Jugar</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="overlay" id="overPanel" hidden>
+        <div class="overlay-inner">
+          <p class="eyebrow" id="overTitle"></p>
+          <p class="final-score" id="finalScore">0</p>
+          <p class="stars" id="stars" hidden></p>
+          <p class="body-txt" id="verdict"></p>
+          <p class="final-best" id="finalBest"></p>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="againBtn" type="button">Jugar otra vez</button>
+            <button class="btn btn-ghost" id="shareBtn" type="button">Retar a alguien</button>
+            <a class="btn btn-link" href="../" data-keep-query>Otros juegos</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../juegos.js?v=5"></script>
+  <script src="game.js?v=2"></script>
+</body>
+
+</html>
