@@ -12,6 +12,12 @@
   };
   const LOWER_IS_BETTER = { memoria: true };
 
+  // Launch lock: before this moment the games show a "coming soon" screen.
+  // Change the date here to open earlier or later (Colombia time, UTC-5).
+  const OPENS_AT = '2026-11-14T00:00:00-05:00';
+  // SHA-256 of the secret in the preview link (?preview=...), so the secret itself is not in this file
+  const PREVIEW_HASH = 'c941c12999b70e8ee6e7094f589bdb24100fd9768c92747cb66d893602cbaee8';
+
   // localStorage can throw (private mode, blocked site data): games must work without it
   function read(key) {
     try {
@@ -640,9 +646,60 @@
     if (!me() && !skipped) pickGuest();
   }
 
+  // ---- Launch lock ----
+  function isLocalHost() {
+    return /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
+  }
+
+  function isLocked() {
+    return Date.now() < Date.parse(OPENS_AT) && read('preview') !== '1' && !isLocalHost();
+  }
+
+  function sha256(text) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function (buffer) {
+      return Array.from(new Uint8Array(buffer)).map(function (b) {
+        return b.toString(16).padStart(2, '0');
+      }).join('');
+    });
+  }
+
+  // A valid ?preview= link unlocks this browser for good and is removed from the address bar
+  function checkPreviewLink() {
+    const match = window.location.search.match(/[?&]preview=([^&]+)/);
+    if (!match || !window.crypto || !crypto.subtle) return Promise.resolve(false);
+    return sha256(decodeURIComponent(match[1])).then(function (hash) {
+      if (hash !== PREVIEW_HASH) return false;
+      write('preview', '1');
+      const clean = window.location.search.replace(/([?&])preview=[^&]+&?/, '$1').replace(/[?&]$/, '');
+      window.history.replaceState(null, '', window.location.pathname + clean);
+      return true;
+    }).catch(function () {
+      return false;
+    });
+  }
+
+  function showLock() {
+    const main = document.querySelector('main');
+    if (main) main.hidden = true;
+    const opens = new Date(OPENS_AT).toLocaleDateString('es', { day: 'numeric', month: 'long' });
+    const lock = document.createElement('div');
+    lock.className = 'locked';
+    lock.innerHTML =
+      '<div class="locked-card">' +
+      '<img class="hub-logo" src="' + BASE + '../assets/Logo.webp" alt="Cami &amp; Sebas">' +
+      '<p class="eyebrow">Cami &amp; Sebas · 14.11.2026</p>' +
+      '<h1 class="script-title">Muy pronto</h1>' +
+      '<p class="body-txt">Estamos preparando algo para ti. Los juegos se abren el <strong></strong>.</p>' +
+      '</div>';
+    lock.querySelector('strong').textContent = opens;
+    document.body.appendChild(lock);
+    return lock;
+  }
+
   // Keep the guest's ?to= while moving between hub and games
   function keepQuery() {
-    const search = window.location.search;
+    // The preview secret stays out of the links so it can't be passed along by accident
+    const search = window.location.search.replace(/([?&])preview=[^&]+&?/, '$1').replace(/[?&]$/, '');
     if (!search) return;
     document.querySelectorAll('a[data-keep-query]').forEach(a => {
       a.setAttribute('href', a.getAttribute('href') + search);
@@ -660,7 +717,21 @@
       if (best) el.textContent = 'Tu récord: ' + best + (el.dataset.bestUnit ? ' ' + el.dataset.bestUnit : '');
     });
     document.querySelectorAll('[data-sound-toggle]').forEach(bindSoundToggle);
-    mountIdentity();
+
+    if (!isLocked()) {
+      checkPreviewLink();
+      mountIdentity();
+    } else {
+      const lock = showLock();
+      checkPreviewLink().then(function (unlocked) {
+        if (!unlocked) return;
+        lock.remove();
+        document.querySelector('main').hidden = false;
+        // Canvas games measured a hidden stage; let them measure again
+        window.dispatchEvent(new Event('resize'));
+        mountIdentity();
+      });
+    }
     // Leftover confetti must not cover the next round
     const again = document.getElementById('againBtn');
     if (again) {

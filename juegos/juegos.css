@@ -1104,6 +1104,39 @@ a.game-card:active {
   }
 }
 
+/* ======== LAUNCH LOCK ======== */
+main[hidden] {
+  display: none;
+}
+
+.locked {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px;
+}
+
+.locked-card {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: min(100%, 380px);
+  padding: 44px 26px;
+  background: var(--card);
+  border: 1px solid rgba(93, 16, 31, .25);
+  outline: 1px solid rgba(93, 16, 31, .12);
+  outline-offset: 5px;
+  box-shadow: 0 30px 70px rgba(47, 42, 38, .22);
+  text-align: center;
+}
+
+.locked-card .hub-logo {
+  margin-bottom: 4px;
+}
+
 /* ======== GUEST PICKER + PODIUM ======== */
 .whoami {
   font-size: .72rem;
