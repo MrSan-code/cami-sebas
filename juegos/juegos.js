@@ -8,7 +8,10 @@
     'atrapa-el-ramo': 'Atrapa el ramo',
     'camino-al-altar': 'Camino al altar',
     'memoria': 'Memoria de parejas',
-    'dale-al-novio': 'Dale al novio'
+    'ronda-de-shots': 'Ronda de shots',
+    'la-gran-huida': 'La gran huida',
+    'brindis': 'Brindis',
+    'hora-loca': 'La hora loca'
   };
   const LOWER_IS_BETTER = { memoria: true };
 
@@ -225,6 +228,181 @@
         ctx.globalAlpha = 1;
       }
     };
+  }
+
+  // ---- Playable characters ----
+  // `chin` is how far down the cutout the chin sits, so the body starts in the right place
+  const CHARACTERS = {
+    sebas: { label: 'Sebas', src: BASE + '../assets/juegos/sebas.webp', ratio: 235 / 320, chin: 0.93 },
+    cami: { label: 'Cami', src: BASE + '../assets/juegos/cami.webp', ratio: 293 / 320, chin: 0.76 }
+  };
+  const SKIN = '#d9a07e';
+
+  function player() {
+    return read('player') === 'cami' ? 'cami' : 'sebas';
+  }
+
+  // Sebas / Cami switch inside a start panel; `onChange` runs once now and on every change
+  function mountPlayerPick(onChange) {
+    const host = document.querySelector('[data-player-pick]');
+    if (!host) return;
+    const face = document.querySelector('#startPanel .overlay-face');
+    function render() {
+      const who = player();
+      host.querySelectorAll('button').forEach(function (btn) {
+        btn.setAttribute('aria-pressed', String(btn.dataset.who === who));
+      });
+      if (face) face.src = CHARACTERS[who].src;
+      onChange(who);
+    }
+    Object.keys(CHARACTERS).forEach(function (who) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.who = who;
+      btn.textContent = CHARACTERS[who].label;
+      btn.addEventListener('click', function () {
+        write('player', who);
+        sfx('flip');
+        render();
+      });
+      host.appendChild(btn);
+    });
+    render();
+  }
+
+  // Full height of a figure for a given head height (feet to top of the head)
+  function figureHeight(who, headH) {
+    return headH * (CHARACTERS[who].chin + 0.78 + 0.42);
+  }
+
+  // Draws a character standing on feetY: Sebas in a suit, Cami in her dress.
+  // arms: [left, right] angles from horizontal (positive hangs down, negative raises).
+  // legs: [left, right] angles from vertical. tilt leans the whole body around the hips.
+  function drawFigure(ctx, o) {
+    const who = o.who === 'cami' ? 'cami' : 'sebas';
+    const isCami = who === 'cami';
+    const headH = o.headH;
+    const headW = headH * CHARACTERS[who].ratio;
+    const bodyH = headH * 0.78;
+    const bodyW = headH * 0.77;
+    const legLen = headH * 0.42;
+    const armLen = headH * 0.36;
+    const limb = Math.max(4, headH * 0.076);
+    const x = o.x;
+    const hipY = o.feetY - legLen;
+    const neckY = hipY - bodyH;
+    const top = neckY - headH * CHARACTERS[who].chin;
+    const arms = o.arms || [0.5, 0.5];
+    const legs = o.legs || [-0.12, 0.12];
+
+    ctx.save();
+    if (o.tilt) {
+      ctx.translate(x, hipY);
+      ctx.rotate(o.tilt);
+      ctx.translate(-x, -hipY);
+    }
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    [-1, 1].forEach(function (side, i) {
+      const hx = x + side * bodyW * 0.22;
+      const fx = hx + Math.sin(legs[i]) * legLen;
+      const fy = hipY - 4 + Math.cos(legs[i]) * legLen;
+      ctx.strokeStyle = isCami ? SKIN : '#2f2a26';
+      ctx.lineWidth = isCami ? limb * 0.8 : limb;
+      ctx.beginPath();
+      ctx.moveTo(hx, hipY - 4);
+      ctx.lineTo(fx, fy);
+      ctx.stroke();
+      if (isCami) {
+        // Shoes
+        ctx.strokeStyle = '#5d101f';
+        ctx.lineWidth = limb;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(fx + limb * 0.5, fy);
+        ctx.stroke();
+      }
+    });
+
+    [-1, 1].forEach(function (side, i) {
+      const sx = x + side * bodyW * (isCami ? 0.34 : 0.46);
+      const sy = neckY + bodyH * 0.14;
+      ctx.strokeStyle = isCami ? SKIN : '#2f2a26';
+      ctx.lineWidth = isCami ? limb * 0.8 : limb;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(sx + side * Math.cos(arms[i]) * armLen, sy + Math.sin(arms[i]) * armLen);
+      ctx.stroke();
+    });
+
+    if (isCami) {
+      const waistY = neckY + bodyH * 0.52;
+      const hemY = hipY + legLen * 0.42;
+      // Neck and shoulders
+      ctx.fillStyle = SKIN;
+      ctx.fillRect(x - bodyW * 0.12, neckY - headH * 0.08, bodyW * 0.24, headH * 0.2);
+      // Dress: fitted bodice with a sweetheart neckline, flared skirt to the knee
+      ctx.fillStyle = '#fffdf9';
+      ctx.strokeStyle = '#cdbfae';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x - bodyW * 0.36, neckY + bodyH * 0.1);
+      ctx.quadraticCurveTo(x - bodyW * 0.18, neckY + bodyH * 0.02, x, neckY + bodyH * 0.2);
+      ctx.quadraticCurveTo(x + bodyW * 0.18, neckY + bodyH * 0.02, x + bodyW * 0.36, neckY + bodyH * 0.1);
+      ctx.lineTo(x + bodyW * 0.27, waistY);
+      ctx.quadraticCurveTo(x + bodyW * 0.62, waistY + (hemY - waistY) * 0.5, x + bodyW * 0.8, hemY);
+      ctx.quadraticCurveTo(x, hemY + headH * 0.1, x - bodyW * 0.8, hemY);
+      ctx.quadraticCurveTo(x - bodyW * 0.62, waistY + (hemY - waistY) * 0.5, x - bodyW * 0.27, waistY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // Folds and sash
+      ctx.strokeStyle = 'rgba(184, 160, 136, .55)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(x - bodyW * 0.1, waistY + 4);
+      ctx.lineTo(x - bodyW * 0.3, hemY - 2);
+      ctx.moveTo(x + bodyW * 0.1, waistY + 4);
+      ctx.lineTo(x + bodyW * 0.3, hemY - 2);
+      ctx.stroke();
+      ctx.fillStyle = '#c58b78';
+      ctx.fillRect(x - bodyW * 0.28, waistY - headH * 0.035, bodyW * 0.56, headH * 0.07);
+    } else {
+      const k = headH / 112;
+      // Jacket, shirt and bow tie
+      ctx.fillStyle = '#2f2a26';
+      ctx.beginPath();
+      ctx.moveTo(x - bodyW / 2, neckY + 8 * k);
+      ctx.quadraticCurveTo(x, neckY - 8 * k, x + bodyW / 2, neckY + 8 * k);
+      ctx.lineTo(x + bodyW * 0.4, hipY);
+      ctx.lineTo(x - bodyW * 0.4, hipY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fbf8f3';
+      ctx.beginPath();
+      ctx.moveTo(x - bodyW * 0.16, neckY);
+      ctx.lineTo(x + bodyW * 0.16, neckY);
+      ctx.lineTo(x, neckY + bodyH * 0.6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#5d101f';
+      ctx.beginPath();
+      ctx.moveTo(x, neckY + 9 * k);
+      ctx.lineTo(x - 12 * k, neckY + 3 * k);
+      ctx.lineTo(x - 12 * k, neckY + 15 * k);
+      ctx.closePath();
+      ctx.moveTo(x, neckY + 9 * k);
+      ctx.lineTo(x + 12 * k, neckY + 3 * k);
+      ctx.lineTo(x + 12 * k, neckY + 15 * k);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    if (o.face && o.face.complete && o.face.naturalWidth) {
+      ctx.drawImage(o.face, x - headW / 2, top, headW, headH);
+    }
+    ctx.restore();
   }
 
   // ---- DOM effects ----
@@ -576,6 +754,7 @@
             write('guest', JSON.stringify(guest));
             renderWhoami();
             renderHubPodium();
+            showRival();
           } else {
             try {
               sessionStorage.setItem(STORE_PREFIX + 'skip-guest', '1');
@@ -612,6 +791,76 @@
     });
   }
 
+  // Celebrates the moment a round passes the player's own best, without waiting for game over
+  function watchRecord() {
+    const main = document.querySelector('main[data-game]');
+    const scoreEl = document.getElementById('score');
+    const stage = document.getElementById('stage');
+    if (!main || !scoreEl || !stage || LOWER_IS_BETTER[main.dataset.game]) return;
+    const game = main.dataset.game;
+    let best = getBest(game);
+    let told = false;
+    new MutationObserver(function () {
+      const score = parseInt(scoreEl.textContent, 10) || 0;
+      if (score === 0) {
+        // A new round: compare against whatever the last one left as the best
+        best = getBest(game);
+        told = false;
+        return;
+      }
+      if (best > 0 && !told && score > best) {
+        told = true;
+        const flash = document.createElement('p');
+        flash.className = 'record-flash';
+        flash.textContent = '¡Nuevo récord!';
+        stage.appendChild(flash);
+        sfx('win');
+        setTimeout(function () {
+          flash.remove();
+        }, 1900);
+      }
+    }).observe(scoreEl, { childList: true, characterData: true, subtree: true });
+  }
+
+  // Start panel: who to beat on the shared podium
+  function showRival() {
+    const main = document.querySelector('main[data-game]');
+    const rules = document.querySelector('#startPanel .rules');
+    if (!main || !rules) return;
+    loadPodium().then(function (all) {
+      const top = all && all[main.dataset.game];
+      let line = document.querySelector('#startPanel .rival');
+      if (!top || !top.length) {
+        if (line) line.remove();
+        return;
+      }
+      if (!line) {
+        line = document.createElement('p');
+        line.className = 'rival';
+        rules.parentNode.insertBefore(line, rules.nextSibling);
+      }
+      const who = me();
+      const mine = who ? top.findIndex(function (row) {
+        return row.guest === who.id;
+      }) : -1;
+      line.textContent = '';
+      const strong = document.createElement('b');
+      if (mine === 0) {
+        line.appendChild(document.createTextNode('Vas de primero con '));
+        strong.textContent = top[0].score;
+        line.appendChild(strong);
+        line.appendChild(document.createTextNode('. A defender el puesto.'));
+        return;
+      }
+      // Next one up if you are on the board, otherwise the leader
+      const target = mine > 0 ? top[mine - 1] : top[0];
+      line.appendChild(document.createTextNode(mine > 0 ? 'A superar: ' : 'Líder: '));
+      strong.textContent = target.name;
+      line.appendChild(strong);
+      line.appendChild(document.createTextNode(' con ' + target.score));
+    });
+  }
+
   // Adds the identity line and podium slots, so the pages don't repeat this markup
   function mountIdentity() {
     document.querySelectorAll('.hub-head, .overlay-inner').forEach(function (host) {
@@ -638,6 +887,24 @@
     }
     renderWhoami();
     renderHubPodium();
+    showRival();
+    watchRecord();
+
+    // A stored guest that is no longer on the list (it was edited) has to choose again
+    const stored = me();
+    if (stored) {
+      loadGuests().then(function (guests) {
+        const known = guests.some(function (g) {
+          return g.id === stored.id;
+        });
+        if (!guests.length || known) return;
+        try {
+          localStorage.removeItem(STORE_PREFIX + 'guest');
+        } catch (e) { /* nothing to clear */ }
+        renderWhoami();
+        pickGuest();
+      });
+    }
 
     let skipped = false;
     try {
@@ -744,6 +1011,9 @@
   window.Juegos = {
     guestNames, joinNames, getBest, saveBest, share,
     sfx, sprite, drawSprite, fx, shake, confetti, toast, countdown, verdict, finish,
-    me, pickGuest
+    me, pickGuest, CHARACTERS, player, mountPlayerPick, figureHeight, drawFigure,
+    isMuted: function () {
+      return muted;
+    }
   };
 })();

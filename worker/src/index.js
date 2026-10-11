@@ -6,7 +6,10 @@ const GAMES = {
   'atrapa-el-ramo': { min: 1, max: 5000 },
   'camino-al-altar': { min: 1, max: 2000 },
   'memoria': { min: 8, max: 300, lowerIsBetter: true },
-  'dale-al-novio': { min: 1, max: 500 }
+  'ronda-de-shots': { min: 1, max: 500 },
+  'la-gran-huida': { min: 1, max: 3000 },
+  'brindis': { min: 1, max: 300 },
+  'hora-loca': { min: 1, max: 1600 }
 };
 const TOP = 10;
 const GUEST_NAMES = new Map(guests.map((g) => [g.id, g.name]));

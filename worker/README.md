@@ -40,7 +40,7 @@ Then publish the site to GitHub Pages as usual.
 ```sh
 # everything
 npx wrangler d1 execute camiysebas-juegos --remote --command "DELETE FROM scores"
-# one game: atrapa-el-ramo, camino-al-altar, memoria or dale-al-novio
+# one game: atrapa-el-ramo, camino-al-altar, memoria, ronda-de-shots, la-gran-huida, brindis or hora-loca
 npx wrangler d1 execute camiysebas-juegos --remote --command "DELETE FROM scores WHERE game = 'memoria'"
 # one guest (id from juegos/invitados.json)
 npx wrangler d1 execute camiysebas-juegos --remote --command "DELETE FROM scores WHERE guest = 'laura'"

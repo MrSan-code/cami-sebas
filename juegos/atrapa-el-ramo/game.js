@@ -5,6 +5,8 @@
   const STREAK_STEP = 5; // catches in a row per multiplier level
   const HEART_WAIT = 22; // seconds after losing a life before a heart may appear
   const HEART_CHANCE = 0.1; // per spawn, once the wait is over
+  const WAVE_EVERY = 28; // seconds between bouquet showers
+  const WAVE_LENGTH = 5;
   const SPRITES = '../../assets/juegos/sprites/';
   const PETALS = ['#5d101f', '#ab5823', '#c58b78', '#e0d6cb'];
   const GOLD = ['#c39a52', '#f0d9a6', '#fbf8f3'];
@@ -52,6 +54,8 @@
   let bokeh = [];
   let spawnIn = 0;
   let heartIn = 0;
+  let waveIn = 0; // seconds until the next bouquet shower
+  let waveFor = 0; // seconds left of the current one
   let lastTime = 0;
   let keyDir = 0;
 
@@ -139,6 +143,8 @@
     fx.clear();
     spawnIn = 0.6;
     heartIn = HEART_WAIT;
+    waveIn = WAVE_EVERY;
+    waveFor = 0;
     player.x = player.targetX = W / 2;
     player.squash = player.hurt = 0;
     scoreEl.textContent = '0';
@@ -174,6 +180,10 @@
       heartIn = HEART_WAIT * 1.5;
     }
 
+    // During a shower it only rains bouquets, and the ones you miss are free
+    const shower = waveFor > 0;
+    if (shower) type = 'ramo';
+
     const size = ITEMS[type].size;
     // Hearts are a reward to chase: faster than everything else and zigzagging
     const rush = type === 'corazon' ? 1.45 : 1;
@@ -189,9 +199,10 @@
       rot: 0,
       swing: type === 'tormenta' ? 0 : 0.22 + Math.random() * 0.12,
       sway: type === 'tormenta' ? 14 + Math.random() * 14 : type === 'corazon' ? 46 : 0,
-      phase: Math.random() * 6
+      phase: Math.random() * 6,
+      free: shower
     });
-    spawnIn = 0.95 - 0.55 * t - 0.1 * overtime();
+    spawnIn = shower ? 0.2 : 0.95 - 0.55 * t - 0.1 * overtime();
   }
 
   function loseLife() {
@@ -232,6 +243,15 @@
   function update(dt) {
     clock += dt;
     heartIn -= dt;
+    waveFor = Math.max(0, waveFor - dt);
+    waveIn -= dt;
+    if (waveIn <= 0) {
+      waveIn = WAVE_EVERY;
+      waveFor = WAVE_LENGTH;
+      spawnIn = 0;
+      fx.label('¡Lluvia de ramos!', W / 2, H * 0.3, '#5d101f', 26);
+      Juegos.sfx('win');
+    }
     if (keyDir) player.targetX = clampX(player.targetX + keyDir * W * 1.3 * dt);
     player.x += (player.targetX - player.x) * Math.min(1, dt * 18);
     player.squash = Math.max(0, player.squash - dt);
@@ -262,7 +282,9 @@
         collect(it, top);
       } else if (it.y - it.r > H - FLOOR) {
         items.splice(i, 1);
-        if (it.type === 'ramo') {
+        if (it.type === 'ramo' && it.free) {
+          fx.burst(it.x, H - FLOOR, PETALS, 5, 100);
+        } else if (it.type === 'ramo') {
           fx.burst(it.x, H - FLOOR, PETALS, 9, 130);
           fx.label('¡Se cayó!', it.x, H - FLOOR - 26, '#5d101f', 15);
           Juegos.sfx('miss');

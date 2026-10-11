@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Viste a los novios — Cami &amp; Sebas</title>
+  <meta name="description" content="Ponles sombrero, gafas y bigote a Sebas y a Cami. Un juego de la boda de Cami &amp; Sebas.">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="Viste a los novios">
+  <meta property="og:description" content="Viste a los novios y comparte la foto. Cami &amp; Sebas, 14.11.2026">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <link rel="icon" type="image/webp" href="../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="preload" href="../../assets/juegos/sebas.webp" as="image">
+  <link rel="stylesheet" href="../juegos.css?v=16">
+</head>
+
+<body>
+  <main class="sheet game">
+    <header class="hud">
+      <a class="hud-back" href="../" data-keep-query>← Juegos</a>
+      <h1 class="hud-title">Viste a los novios</h1>
+      <div class="hud-side">
+        <button class="hud-sound" type="button" data-sound-toggle>♪</button>
+      </div>
+    </header>
+
+    <div class="dress">
+      <div class="dress-figure" id="figure">
+        <img class="dress-face" id="face" src="../../assets/juegos/sebas.webp" alt="Sebas" draggable="false">
+      </div>
+      <p class="dress-tip">Toca un accesorio para ponerlo y arrástralo para acomodarlo. También puedes vestirte tú con una selfie.</p>
+
+      <div class="dress-faces" role="group" aria-label="A quién vestir">
+        <button type="button" data-face="sebas" aria-pressed="true">Sebas</button>
+        <button type="button" data-face="cami" aria-pressed="false">Cami</button>
+        <button type="button" data-face="selfie" aria-pressed="false">Tu selfie</button>
+      </div>
+      <button class="btn btn-link" id="retakeBtn" type="button" hidden>Cambiar mi foto</button>
+      <input class="visually-hidden" id="selfieInput" type="file" accept="image/*" tabindex="-1" aria-hidden="true">
+
+      <div class="dress-tray" id="tray" role="group" aria-label="Accesorios"></div>
+
+      <div class="dress-actions">
+        <button class="btn btn-ghost" id="randomBtn" type="button">Al azar</button>
+        <button class="btn btn-primary" id="saveBtn" type="button">Guardar foto</button>
+        <button class="btn btn-link" id="clearBtn" type="button">Quitar todo</button>
+      </div>
+      <p class="dress-status" id="status" aria-live="polite"></p>
+    </div>
+  </main>
+
+  <div class="camera" id="camera" role="dialog" aria-modal="true" aria-label="Tómate una selfie" hidden>
+    <div class="camera-card">
+      <p class="eyebrow">Tu selfie</p>
+      <div class="camera-view">
+        <video id="cameraVideo" playsinline muted autoplay></video>
+        <p class="camera-msg" id="cameraMsg"></p>
+      </div>
+      <p class="body-txt">Ponte de frente y con buena luz. La foto no sale de tu teléfono.</p>
+      <div class="camera-actions">
+        <button class="btn btn-primary" id="shootBtn" type="button">Tomar foto</button>
+        <button class="btn btn-ghost" id="galleryBtn" type="button">Elegir de la galería</button>
+        <button class="btn btn-link" id="cameraCancel" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../juegos.js?v=12"></script>
+  <script src="selfie.js?v=2"></script>
+  <script src="game.js?v=12"></script>
+</body>
+
+</html>

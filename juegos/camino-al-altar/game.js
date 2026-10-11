@@ -4,6 +4,7 @@
   const FLOWERS = ['#5d101f', '#ab5823', '#c58b78', '#fbf8f3'];
   const GOLD = ['#c39a52', '#f0d9a6', '#fbf8f3'];
   const RING_POINTS = 3;
+  const SWAY_FROM = 15; // arches passed before the gaps start to move
 
   const VERDICTS = [
     { min: 0, text: 'Llegaste tarde a tu propia boda.' },
@@ -90,7 +91,12 @@
     // Keep consecutive gaps reachable at full speed
     const prev = arches[arches.length - 1];
     if (prev) top = Math.max(prev.top - H * 0.26, Math.min(prev.top + H * 0.26, top));
-    const arch = { x: x, top: top, bottom: top + gap, passed: false };
+    // Later arches drift up and down a little, more as the run goes on
+    const sway = passed >= SWAY_FROM ? H * 0.045 * Math.min(1, (passed - SWAY_FROM + 5) / 20) : 0;
+    const arch = {
+      x: x, top: top, bottom: top + gap, passed: false,
+      baseTop: top, gap: gap, sway: sway, phase: Math.random() * 6
+    };
     arches.push(arch);
 
     // Sometimes a ring floats halfway to this arch, a bit off the easy line
@@ -177,7 +183,13 @@
       player.vy = 0;
     }
 
-    for (const a of arches) a.x -= speed * dt;
+    for (const a of arches) {
+      a.x -= speed * dt;
+      if (a.sway) {
+        a.top = a.baseTop + Math.sin(clock * 1.7 + a.phase) * a.sway;
+        a.bottom = a.top + a.gap;
+      }
+    }
     for (const r of rings) r.x -= speed * dt;
     if (arches.length && arches[0].x + ARCH_W < -30) arches.shift();
     if (rings.length && rings[0].x < -30) rings.shift();
@@ -203,7 +215,8 @@
         passed++;
         addScore(1);
         Juegos.sfx('pick');
-        if (passed % 10 === 0) Juegos.toast(toastEl, '¡' + passed + ' arcos!');
+        if (passed === SWAY_FROM) Juegos.toast(toastEl, '¡Ahora se mueven!');
+        else if (passed % 10 === 0) Juegos.toast(toastEl, '¡' + passed + ' arcos!');
       }
       if (hitsRect(a.x, -H, ARCH_W, H + a.top) || hitsRect(a.x, a.bottom, ARCH_W, H)) {
         crash();

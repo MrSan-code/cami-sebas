@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>La hora loca — Cami &amp; Sebas</title>
+  <meta name="description" content="Lleva el ritmo en la pista. Un juego de la boda de Cami &amp; Sebas.">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="La hora loca">
+  <meta property="og:description" content="¿Qué tan bien bailas en la hora loca? Cami &amp; Sebas, 14.11.2026">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <link rel="icon" type="image/webp" href="../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="preload" href="../../assets/juegos/sebas.webp" as="image">
+  <link rel="stylesheet" href="../juegos.css?v=16">
+</head>
+
+<body>
+  <main class="sheet game" data-game="hora-loca">
+    <header class="hud">
+      <a class="hud-back" href="../" data-keep-query>← Juegos</a>
+      <p class="hud-score"><b id="score">0</b><span>Puntos</span></p>
+      <div class="hud-side">
+        <p class="hud-info" id="best"></p>
+        <button class="hud-sound" type="button" data-sound-toggle>♪</button>
+      </div>
+    </header>
+
+    <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+    <div class="stage" id="stage">
+      <canvas id="canvas" aria-label="Zona de juego"></canvas>
+      <p class="chip" id="combo" hidden></p>
+
+      <section class="overlay" id="startPanel">
+        <div class="overlay-inner">
+          <img class="overlay-face" src="../../assets/juegos/sebas.webp" alt="" width="235" height="320">
+          <p class="eyebrow" data-guest="{names}, a la pista">A la pista</p>
+          <h1 class="script-title">La hora loca</h1>
+          <div class="dress-faces" data-player-pick role="group" aria-label="Con quién juegas"></div>
+          <ul class="rules">
+            <li><img src="../../assets/juegos/sprites/nota.svg" alt="" width="28" height="28"> <span>Toca cada <b>cerveza</b> (o flor, si bailas con Cami) justo cuando llegue a su círculo.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Entre más <b>seguidas</b>, más vale cada una.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Sube el <b>volumen</b>: todo cae al ritmo de la canción.</span></li>
+          </ul>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="startBtn" type="button">Jugar</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="overlay" id="overPanel" hidden>
+        <div class="overlay-inner">
+          <p class="eyebrow" id="overTitle"></p>
+          <p class="final-score" id="finalScore">0</p>
+          <p class="stars" id="stars" hidden></p>
+          <p class="body-txt" id="verdict"></p>
+          <p class="final-best" id="finalBest"></p>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="againBtn" type="button">Jugar otra vez</button>
+            <button class="btn btn-ghost" id="shareBtn" type="button">Retar a alguien</button>
+            <a class="btn btn-link" href="../" data-keep-query>Otros juegos</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../juegos.js?v=12"></script>
+  <script src="game.js?v=10"></script>
+</body>
+
+</html>
