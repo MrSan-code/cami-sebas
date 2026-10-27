@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Menú — Cami &amp; Sebas</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f7f3ec">
+  <link rel="icon" type="image/webp" href="../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../qr.css">
+  <script>
+    // Unidentified guests start at the welcome page. If storage is blocked, let them in.
+    (function () {
+      try {
+        var guest = JSON.parse(localStorage.getItem('cys-juegos:guest'));
+        if (!guest || !guest.id) location.replace('../');
+      } catch (e) { /* storage unavailable */ }
+    })();
+  </script>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="back" href="../">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      Inicio
+    </a>
+    <img class="topbar-logo" src="../../assets/Logo.webp" alt="Cami &amp; Sebas" width="976" height="1088">
+  </header>
+
+  <main class="wrap">
+    <div class="sec-head">
+      <p class="sec-kicker">Para disfrutar</p>
+      <h1 class="sec-title">Menú</h1>
+    </div>
+
+    <div class="card">
+      <h3>Cóctel · 13:15</h3>
+      <p>Pasabocas de sal</p>
+    </div>
+    <div class="card">
+      <h3>Almuerzo · 14:40</h3>
+      <p>Por Santo Grill</p>
+    </div>
+    <div class="card">
+      <h3>Feria · desde las 16:00</h3>
+      <p>Zona dulce<br>Zona de café<br>Zona de cócteles</p>
+    </div>
+  </main>
+
+  <footer>
+    <small>Con amor</small>
+    <span class="sig">Cami &amp; Sebas</span>
+  </footer>
+</body>
+
+</html>

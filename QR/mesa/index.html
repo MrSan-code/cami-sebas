@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Busca tu mesa — Cami &amp; Sebas</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f7f3ec">
+  <link rel="icon" type="image/webp" href="../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../qr.css">
+  <script>
+    // Unidentified guests start at the welcome page. If storage is blocked, let them in.
+    (function () {
+      try {
+        var guest = JSON.parse(localStorage.getItem('cys-juegos:guest'));
+        if (!guest || !guest.id) location.replace('../');
+      } catch (e) { /* storage unavailable */ }
+    })();
+  </script>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="back" href="../">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      Inicio
+    </a>
+    <img class="topbar-logo" src="../../assets/Logo.webp" alt="Cami &amp; Sebas" width="976" height="1088">
+  </header>
+
+  <main class="wrap">
+    <div class="sec-head">
+      <p class="sec-kicker">Tu lugar</p>
+      <h1 class="sec-title">Busca tu mesa</h1>
+    </div>
+
+    <div class="card" id="mine" hidden>
+      <h3 id="mineName"></h3>
+      <p id="mineTable"></p>
+    </div>
+
+    <p class="sec-note" style="text-align:center;margin-bottom:12px" id="searchNote">Escribe tu nombre o apellido</p>
+
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+      <input id="q" type="search" placeholder="Ej. Ana Díaz" autocomplete="off" aria-label="Nombre del invitado">
+    </label>
+
+    <div class="results-box" id="resultsBox" hidden>
+      <ul class="results" id="results"></ul>
+    </div>
+  </main>
+
+  <footer>
+    <small>Con amor</small>
+    <span class="sig">Cami &amp; Sebas</span>
+  </footer>
+
+  <script src="../qr.js"></script>
+  <script>
+    (function () {
+      // Table assignments: guest id (from juegos/invitados.json) -> table number.
+      // Leave empty until the seating plan is ready.
+      var TABLES = {};
+
+      function tableLabel(id) {
+        return TABLES[id] ? 'Mesa ' + TABLES[id] : null;
+      }
+
+      /* ---------- The signed-in guest's own table ---------- */
+      var guest = QR.me();
+      if (guest) {
+        document.getElementById('mine').hidden = false;
+        document.getElementById('mineName').textContent = QR.firstName(guest.name) + ', tu mesa es';
+        document.getElementById('mineTable').textContent =
+          tableLabel(guest.id) || 'Muy pronto te la contamos aquí';
+        document.getElementById('searchNote').textContent = '¿Buscas a alguien más?';
+      }
+
+      /* ---------- Search any guest ---------- */
+      var input = document.getElementById('q');
+      var box = document.getElementById('resultsBox');
+      var list = document.getElementById('results');
+      var guests = [];
+
+      function render() {
+        var matches = QR.search(guests, input.value);
+        list.innerHTML = '';
+        if (!matches) { box.hidden = true; return; }
+        box.hidden = false;
+
+        if (!matches.length) {
+          list.innerHTML = '<li class="results-empty">No encontramos ese nombre. Pregunta a nuestro equipo en la entrada.</li>';
+          return;
+        }
+
+        matches.forEach(function (g) {
+          var li = document.createElement('li');
+          var name = document.createElement('span');
+          name.textContent = g.name;
+          var table = document.createElement('span');
+          var label = tableLabel(g.id);
+          table.className = label ? 'table-no' : 'pending';
+          table.textContent = label || 'Pronto';
+          li.appendChild(name);
+          li.appendChild(table);
+          list.appendChild(li);
+        });
+      }
+
+      input.addEventListener('input', render);
+
+      QR.loadGuests('../../juegos/invitados.json').then(function (data) {
+        guests = data;
+        if (input.value) render();
+      });
+    })();
+  </script>
+</body>
+
+</html>

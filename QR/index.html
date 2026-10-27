@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cami &amp; Sebas — El gran día</title>
+  <meta name="description" content="Itinerario, menú, mesas y juegos de la boda de Cami &amp; Sebas, 14.11.2026">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="Cami &amp; Sebas — El gran día">
+  <meta property="og:description" content="Itinerario, menú, mesas y juegos de la boda.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <meta name="theme-color" content="#f7f3ec">
+  <link rel="icon" type="image/webp" href="../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="qr.css">
+</head>
+
+<body>
+  <main>
+    <header class="hero">
+      <img class="hero-logo" src="../assets/Logo.webp" alt="" width="976" height="1088">
+      <p class="hero-kicker">El gran día</p>
+      <h1 class="hero-names">Cami &amp; Sebas</h1>
+      <p class="hero-meta">Sábado 14 de noviembre<span class="dot">·</span>Villa Eucalyptus, Nobsa</p>
+
+      <div class="wrap">
+        <section class="welcome" aria-live="polite">
+          <p class="welcome-title" id="helloTitle">¡Bienvenidos a nuestra boda!</p>
+          <p class="welcome-text" id="helloText">Qué alegría tenerte aquí. Cuéntanos quién eres.</p>
+
+          <div id="picker">
+            <label class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <input id="who" type="search" placeholder="Escribe tu nombre" autocomplete="off" aria-label="Tu nombre">
+            </label>
+            <div class="results-box" id="whoBox" hidden>
+              <ul class="results" id="whoList"></ul>
+            </div>
+          </div>
+
+          <button class="link-btn" id="notMe" type="button" hidden>¿No eres tú?</button>
+        </section>
+
+        <nav class="tiles" id="tiles" aria-label="Secciones" hidden>
+          <a class="tile" href="itinerario/">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
+            <span>Itinerario</span>
+          </a>
+          <a class="tile" href="menu/">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5a2 2 0 0 0 4 0V3" />
+              <path d="M17 21V3c-2 1.5-3 4-3 7s1 4 3 4" />
+            </svg>
+            <span>Menú</span>
+          </a>
+          <a class="tile" href="mesa/">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="9" rx="9" ry="3.5" />
+              <path d="M12 12.5V21M8 21h8" />
+            </svg>
+            <span>Busca tu mesa</span>
+          </a>
+          <a class="tile" href="../juegos/">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2.5" y="7" width="19" height="11" rx="5.5" />
+              <path d="M7.5 10.5v4M5.5 12.5h4" />
+              <circle cx="15.5" cy="11.5" r=".6" />
+              <circle cx="17.5" cy="13.5" r=".6" />
+            </svg>
+            <span>Juegos</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+  </main>
+
+  <footer>
+    <small>Con amor</small>
+    <span class="sig">Cami &amp; Sebas</span>
+  </footer>
+
+  <script src="qr.js"></script>
+  <script>
+    (function () {
+      var title = document.getElementById('helloTitle');
+      var text = document.getElementById('helloText');
+      var picker = document.getElementById('picker');
+      var input = document.getElementById('who');
+      var box = document.getElementById('whoBox');
+      var list = document.getElementById('whoList');
+      var notMe = document.getElementById('notMe');
+      var tiles = document.getElementById('tiles');
+      var guests = [];
+
+      function renderGreeting() {
+        var guest = QR.me();
+        if (guest) {
+          title.textContent = '¡Hola, ' + QR.firstName(guest.name) + '!';
+          text.textContent = 'Qué alegría que estés aquí. Esto es todo lo que necesitas para hoy.';
+        } else {
+          title.textContent = '¡Bienvenidos a nuestra boda!';
+          text.textContent = 'Qué alegría tenerte aquí. Cuéntanos quién eres.';
+        }
+        picker.hidden = !!guest;
+        notMe.hidden = !guest;
+        tiles.hidden = !guest;
+      }
+
+      function renderResults() {
+        var matches = QR.search(guests, input.value);
+        list.innerHTML = '';
+        if (!matches) { box.hidden = true; return; }
+        box.hidden = false;
+
+        if (!matches.length) {
+          list.innerHTML = '<li class="results-empty">No encontramos ese nombre. Prueba solo con tu apellido.</li>';
+          return;
+        }
+
+        matches.forEach(function (g) {
+          var li = document.createElement('li');
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'pick';
+          btn.textContent = g.name;
+          btn.addEventListener('click', function () {
+            QR.setMe(g);
+            input.value = '';
+            box.hidden = true;
+            renderGreeting();
+          });
+          li.appendChild(btn);
+          list.appendChild(li);
+        });
+      }
+
+      notMe.addEventListener('click', function () {
+        QR.setMe(null);
+        renderGreeting();
+        input.focus();
+      });
+
+      input.addEventListener('input', renderResults);
+
+      QR.loadGuests('../juegos/invitados.json').then(function (data) {
+        guests = data;
+        if (input.value) renderResults();
+      });
+
+      renderGreeting();
+    })();
+  </script>
+</body>
+
+</html>
