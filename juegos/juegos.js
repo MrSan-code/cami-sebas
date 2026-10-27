@@ -524,7 +524,8 @@
   }
 
   // ---- Guest identity and shared leaderboard (Cloudflare Worker under /api) ----
-  const API = window.JUEGOS_API || read('api') || '/api';
+  // On a developer machine the API is the local `wrangler dev`; on the real site it is same-origin
+  const API = window.JUEGOS_API || read('api') || (isLocalHost() ? 'http://127.0.0.1:8787/api' : '/api');
   let guestsPromise = null;
   let podiumPromise = null;
 
@@ -755,6 +756,7 @@
             renderWhoami();
             renderHubPodium();
             showRival();
+            document.dispatchEvent(new CustomEvent('juegos:guest'));
           } else {
             try {
               sessionStorage.setItem(STORE_PREFIX + 'skip-guest', '1');
@@ -953,6 +955,7 @@
     lock.className = 'locked';
     lock.innerHTML =
       '<div class="locked-card">' +
+      '<a class="back-home" href="' + BASE + '../QR/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg> Inicio</a>' +
       '<img class="hub-logo" src="' + BASE + '../assets/Logo.webp" alt="Cami &amp; Sebas">' +
       '<p class="eyebrow">Cami &amp; Sebas · 14.11.2026</p>' +
       '<h1 class="script-title">Muy pronto</h1>' +
@@ -1014,6 +1017,9 @@
     me, pickGuest, CHARACTERS, player, mountPlayerPick, figureHeight, drawFigure,
     isMuted: function () {
       return muted;
+    },
+    apiBase: function () {
+      return API;
     }
   };
 })();

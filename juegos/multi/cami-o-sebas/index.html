@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>¿Cami o Sebas? — Cami &amp; Sebas</title>
+  <meta name="description" content="Todos votan a la vez. Suma quien piense como la mayoría. Un juego en vivo de la boda de Cami &amp; Sebas.">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="¿Cami o Sebas?">
+  <meta property="og:description" content="Todos votan a la vez. Suma quien piense como la mayoría.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <link rel="icon" type="image/webp" href="../../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="../../juegos.css?v=19">
+</head>
+
+<body>
+  <main class="sheet game">
+    <header class="hud">
+      <a class="hud-back" href="../../" data-keep-query>← Juegos</a>
+      <h1 class="hud-title">¿Cami o Sebas?</h1>
+      <div class="hud-side">
+        <p class="hud-info" id="online"></p>
+        <button class="hud-sound" type="button" data-sound-toggle>♪</button>
+      </div>
+    </header>
+
+    <div class="stage stage-lights" id="stage">
+      <div class="multi-play" id="play">
+        <p class="multi-note" id="round"></p>
+        <p class="vote-q" id="question"></p>
+        <div class="progress vote-timer" aria-hidden="true"><i id="timer"></i></div>
+        <div class="vote-options">
+          <button class="vote-btn" type="button" data-vote="cami"><i class="vote-fill" id="fillCami"></i><img src="../../../assets/juegos/cami.webp" alt=""><span>Cami</span><b id="pctCami"></b><small id="whoCami"></small></button>
+          <button class="vote-btn" type="button" data-vote="sebas"><i class="vote-fill" id="fillSebas"></i><img src="../../../assets/juegos/sebas.webp" alt=""><span>Sebas</span><b id="pctSebas"></b><small id="whoSebas"></small></button>
+        </div>
+        <p class="multi-note is-strong" id="you"></p>
+        <ol class="mini-board" id="board"></ol>
+      </div>
+
+      <section class="overlay" id="lobby">
+        <div class="overlay-inner">
+          <p class="eyebrow">Multijugador en vivo</p>
+          <h2 class="script-title">¿Cami o Sebas?</h2>
+          <ul class="rules">
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Sale una pregunta y todos votan: <b>Cami</b> o <b>Sebas</b>.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Sumas si votas con la <b>mayoría</b>; desde tres aciertos seguidos, cada uno vale doble.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Son <b>8 preguntas</b>, de 10 segundos cada una.</span></li>
+          </ul>
+          <p class="multi-count" id="lobbyCount"></p>
+          <ul class="multi-chips" id="lobbyPlayers"></ul>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="startBtn" type="button" disabled>Empezar</button>
+            <button class="btn btn-link" id="inviteBtn" type="button">Invitar a la sala</button>
+          </div>
+          <p class="multi-status" id="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="overlay" id="results" hidden>
+        <div class="overlay-inner">
+          <p class="eyebrow">Resultado</p>
+          <h2 class="results-headline" id="headline"></h2>
+          <ol class="podium-list" id="ranking"></ol>
+          <p class="multi-status" id="nextIn"></p>
+          <a class="btn btn-link" href="../../" data-keep-query>Otros juegos</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../juegos.js?v=15"></script>
+  <script src="../../sala.js?v=3"></script>
+  <script src="game.js?v=3"></script>
+</body>
+
+</html>

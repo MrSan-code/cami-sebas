@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>¡Salud! — Cami &amp; Sebas</title>
+  <meta name="description" content="Espera el brindis y toca antes que nadie. Un juego en vivo de la boda de Cami &amp; Sebas.">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="¡Salud!">
+  <meta property="og:description" content="Espera el brindis y toca antes que nadie.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <link rel="icon" type="image/webp" href="../../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="../../juegos.css?v=19">
+</head>
+
+<body>
+  <main class="sheet game">
+    <header class="hud">
+      <a class="hud-back" href="../../" data-keep-query>← Juegos</a>
+      <h1 class="hud-title">¡Salud!</h1>
+      <div class="hud-side">
+        <p class="hud-info" id="online"></p>
+        <button class="hud-sound" type="button" data-sound-toggle>♪</button>
+      </div>
+    </header>
+
+    <div class="stage stage-lights" id="stage">
+      <div class="multi-play" id="play">
+        <div class="dots" id="dots" aria-hidden="true"></div>
+        <p class="multi-note" id="round"></p>
+        <button class="pad toast-pad" id="pad" type="button">
+          <span class="glasses" aria-hidden="true"><img src="../../../assets/juegos/sprites/copa.svg" alt=""><img src="../../../assets/juegos/sprites/copa.svg" alt=""></span>
+          <span id="padText">Espera…</span><small id="padSub"></small>
+        </button>
+        <ol class="podium-list reflex-list" id="roundList"></ol>
+      </div>
+
+      <section class="overlay" id="lobby">
+        <div class="overlay-inner">
+          <p class="eyebrow">Multijugador en vivo</p>
+          <h2 class="script-title">¡Salud!</h2>
+          <ul class="rules">
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Espera a que la pantalla diga <b>¡Salud!</b> y toca antes que los demás.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Ojo con los <b>señuelos</b>: “¡Salsa!”, “¡Saludos!”… Si tocas con uno, pierdes la ronda.</span></li>
+            <li><img src="../../../assets/juegos/sprites/copa.svg" alt="" width="28" height="28"> <span>Son <b>5 rondas</b>. El más rápido de cada una se lleva 5 puntos.</span></li>
+          </ul>
+          <p class="multi-count" id="lobbyCount"></p>
+          <ul class="multi-chips" id="lobbyPlayers"></ul>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="startBtn" type="button" disabled>Empezar</button>
+            <button class="btn btn-link" id="inviteBtn" type="button">Invitar a la sala</button>
+          </div>
+          <p class="multi-status" id="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="overlay" id="results" hidden>
+        <div class="overlay-inner">
+          <p class="eyebrow">Resultado</p>
+          <h2 class="results-headline" id="headline"></h2>
+          <ol class="podium-list" id="ranking"></ol>
+          <p class="multi-status" id="nextIn"></p>
+          <a class="btn btn-link" href="../../" data-keep-query>Otros juegos</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../juegos.js?v=15"></script>
+  <script src="../../sala.js?v=3"></script>
+  <script src="game.js?v=3"></script>
+</body>
+
+</html>

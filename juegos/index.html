@@ -19,17 +19,18 @@
     href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="juegos.css?v=16">
+  <link rel="stylesheet" href="juegos.css?v=19">
 </head>
 
 <body>
   <main class="sheet">
     <header class="hub-head">
+      <a class="back-home" href="../QR/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg> Inicio</a>
       <img class="hub-logo" src="../assets/Logo.webp" alt="Cami &amp; Sebas" width="976" height="1088">
       <p class="eyebrow">Cami &amp; Sebas · 14.11.2026</p>
       <h1 class="script-title">A jugar</h1>
-      <p class="body-txt" data-guest="{names}, mientras llega el gran día, a ver quién hace el mejor puntaje.">
-        Mientras llega el gran día, a ver quién hace el mejor puntaje.</p>
+      <p class="body-txt" data-guest="{names}, hoy es el gran día. ¡A ver quién hace el mejor puntaje de la boda!">
+        Hoy es el gran día. ¡A ver quién hace el mejor puntaje de la boda!</p>
     </header>
 
     <ul class="hub-list">
@@ -120,10 +121,65 @@
           <span class="game-tag">Jugar</span>
         </a>
       </li>
+      <li class="hub-sep">
+        <p class="eyebrow">Multijugador</p>
+        <h2 class="script-title">Todos a la vez</h2>
+        <p class="body-txt">Juegos en vivo: entran todos a la misma sala y juegan al tiempo.</p>
+      </li>
+      <li>
+        <a class="game-card" href="multi/tira-y-afloja/" data-keep-query>
+          <span class="game-icon"><img src="../assets/juegos/sprites/cuerda.svg" alt="" width="38" height="38"></span>
+          <span>
+            <span class="game-name">Tira y afloja</span>
+            <span class="game-desc">Equipo Cami contra Equipo Sebas.</span>
+          </span>
+          <span class="game-tag is-live">En vivo</span>
+        </a>
+      </li>
+      <li>
+        <a class="game-card" href="multi/carrera-al-altar/" data-keep-query>
+          <span class="game-icon"><img src="../assets/juegos/sprites/arco.svg" alt="" width="38" height="38"></span>
+          <span>
+            <span class="game-name">Carrera al altar</span>
+            <span class="game-desc">Todos corren: gana quien toque más rápido.</span>
+          </span>
+          <span class="game-tag is-live">En vivo</span>
+        </a>
+      </li>
+      <li>
+        <a class="game-card" href="multi/cami-o-sebas/" data-keep-query>
+          <span class="game-icon"><img src="../assets/juegos/sprites/voto.svg" alt="" width="38" height="38"></span>
+          <span>
+            <span class="game-name">¿Cami o Sebas?</span>
+            <span class="game-desc">Todos votan. Suma quien piense como la mayoría.</span>
+          </span>
+          <span class="game-tag is-live">En vivo</span>
+        </a>
+      </li>
+      <li>
+        <a class="game-card" href="multi/reflejos/" data-keep-query>
+          <span class="game-icon"><img src="../assets/juegos/sprites/copa.svg" alt="" width="38" height="38"></span>
+          <span>
+            <span class="game-name">¡Salud!</span>
+            <span class="game-desc">Espera el brindis y toca antes que nadie.</span>
+          </span>
+          <span class="game-tag is-live">En vivo</span>
+        </a>
+      </li>
+      <li>
+        <a class="game-card" href="multi/pasa-la-cuenta/" data-keep-query>
+          <span class="game-icon"><img src="../assets/juegos/sprites/cuenta.svg" alt="" width="38" height="38"></span>
+          <span>
+            <span class="game-name">Pasa la cuenta</span>
+            <span class="game-desc">Que no te quede a ti cuando se acabe el tiempo.</span>
+          </span>
+          <span class="game-tag is-live">En vivo</span>
+        </a>
+      </li>
     </ul>
   </main>
 
-  <script src="juegos.js?v=12"></script>
+  <script src="juegos.js?v=15"></script>
 </body>
 
 </html>

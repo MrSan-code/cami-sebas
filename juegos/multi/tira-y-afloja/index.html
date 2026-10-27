@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tira y afloja — Cami &amp; Sebas</title>
+  <meta name="description" content="Equipo Cami contra Equipo Sebas, a punta de toques. Un juego en vivo de la boda de Cami &amp; Sebas.">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="Tira y afloja">
+  <meta property="og:description" content="Equipo Cami contra Equipo Sebas, a punta de toques.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camiysebas.online/assets/Logo.webp">
+  <link rel="icon" type="image/webp" href="../../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="../../juegos.css?v=19">
+</head>
+
+<body>
+  <main class="sheet game">
+    <header class="hud">
+      <a class="hud-back" href="../../" data-keep-query>← Juegos</a>
+      <h1 class="hud-title">Tira y afloja</h1>
+      <div class="hud-side">
+        <p class="hud-info" id="online"></p>
+        <button class="hud-sound" type="button" data-sound-toggle>♪</button>
+      </div>
+    </header>
+
+    <div class="stage stage-lights" id="stage">
+      <div class="multi-play" id="play">
+        <div class="tug-teams">
+          <div class="tug-team is-cami"><b id="nCami">0</b><span>Equipo Cami</span><i class="tug-meter"><em id="rateCami"></em></i></div>
+          <div class="tug-team is-sebas"><b id="nSebas">0</b><span>Equipo Sebas</span><i class="tug-meter"><em id="rateSebas"></em></i></div>
+        </div>
+        <div class="scene"><canvas id="scene" aria-label="La cuerda"></canvas><p class="chip" id="boost" hidden>¡Doble fuerza!</p></div>
+        <p class="multi-note" id="you"></p>
+        <button class="tap-btn" id="pull" type="button">¡Jala!</button>
+      </div>
+
+      <section class="overlay" id="lobby">
+        <div class="overlay-inner">
+          <p class="eyebrow">Multijugador en vivo</p>
+          <h2 class="script-title">Tira y afloja</h2>
+          <ul class="rules">
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Elige tu equipo: <b>Cami</b> o <b>Sebas</b>.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Cuando empiece, toca el botón lo más rápido que puedas para <b>jalar la cuerda</b>.</span></li>
+            <li><span class="mark" aria-hidden="true">✦</span> <span>Cuando salga <b>¡Doble fuerza!</b>, cada toque vale por dos. Gana quien lleve la cuerda a su lado.</span></li>
+          </ul>
+          <div class="dress-faces" role="group" aria-label="Tu equipo">
+            <button type="button" data-team="cami" aria-pressed="false">Equipo Cami</button>
+            <button type="button" data-team="sebas" aria-pressed="false">Equipo Sebas</button>
+          </div>
+          <p class="multi-count" id="lobbyCount"></p>
+          <ul class="multi-chips" id="lobbyPlayers"></ul>
+          <div class="overlay-actions">
+            <button class="btn btn-primary" id="startBtn" type="button" disabled>Empezar</button>
+            <button class="btn btn-link" id="inviteBtn" type="button">Invitar a la sala</button>
+          </div>
+          <p class="multi-status" id="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="overlay" id="results" hidden>
+        <div class="overlay-inner">
+          <p class="eyebrow">Resultado</p>
+          <h2 class="results-headline" id="headline"></h2>
+          <ol class="podium-list" id="ranking"></ol>
+          <p class="multi-status" id="nextIn"></p>
+          <a class="btn btn-link" href="../../" data-keep-query>Otros juegos</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../juegos.js?v=15"></script>
+  <script src="../../sala.js?v=3"></script>
+  <script src="game.js?v=3"></script>
+</body>
+
+</html>
