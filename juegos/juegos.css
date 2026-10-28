@@ -335,6 +335,45 @@ a.game-card:active {
   display: none;
 }
 
+/* Hub online cards: guests in the room right now */
+.game-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--terra);
+}
+
+.game-live::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 0 currentColor;
+  animation: live-dot 1.6s ease-out infinite;
+}
+
+.game-live.is-playing {
+  color: var(--wine);
+}
+
+.game-live:empty {
+  display: none;
+}
+
+@keyframes live-dot {
+  70% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-live::before { animation: none; }
+}
+
 /* ======== GAME SHELL (shared by every game) ======== */
 .game {
   display: flex;
@@ -2541,6 +2580,56 @@ main[hidden] {
   line-height: 1.25;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Invite picker in the multiplayer rooms */
+.invite-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.invite-name small {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--ink-soft);
+}
+
+.invite-name.is-online {
+  border-color: var(--terra);
+  background: rgba(171, 88, 35, .08);
+}
+
+.invite-name.is-online small {
+  color: var(--terra);
+}
+
+.invite-name.is-online small::before {
+  content: "● ";
+}
+
+.invite-name.is-sent {
+  border-color: var(--sage);
+  background: rgba(112, 127, 117, .1);
+}
+
+.invite-name.is-sent small {
+  color: var(--sage-deep);
+}
+
+.invite-name.is-sent small::before {
+  content: "✓ ";
+}
+
+.invite-loading {
+  grid-column: 1 / -1;
+  padding: 16px;
+  text-align: center;
+  font-size: .8rem;
+  color: var(--ink-soft);
 }
 
 .picker-name.is-suggested {

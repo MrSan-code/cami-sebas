@@ -10,6 +10,24 @@ routes = [
 [vars]
 ALLOWED_ORIGINS = "https://camiysebas.online,https://www.camiysebas.online"
 
+# Multiplayer rooms (SQLite-backed class: the kind available on the free plan)
+[[durable_objects.bindings]]
+name = "SALAS"
+class_name = "Sala"
+
+[[durable_objects.bindings]]
+name = "BUZON"
+class_name = "Buzon"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Sala"]
+
+# Mailbox for live invitations between guests
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["Buzon"]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "camiysebas-juegos"

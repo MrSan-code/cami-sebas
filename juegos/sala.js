@@ -4,6 +4,112 @@ window.Sala = (function () {
   const TAP_FLUSH_MS = 200;
   const RETRY_MS = 1500;
   const AVATAR_COLORS = ['#5d101f', '#ab5823', '#c58b78', '#707f75', '#4b584f', '#b8a088', '#7a2232', '#c39a52'];
+  const GUESTS_URL = ((document.currentScript && document.currentScript.src) || '').replace(/[^/]*$/, '') + 'invitados.json';
+
+  function plain(text) {
+    return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+  }
+
+  // Guest list to invite from: who has the site open goes first and gets the invitation live;
+  // anyone else gets the room link through the phone's share sheet
+  function openInvite(config, room) {
+    const title = document.title.split(' — ')[0];
+    const shareText = 'Entra a jugar ' + title + ' conmigo en la boda de Cami & Sebas.';
+    const who = Juegos.me();
+    if (!window.Buzon || !who) {
+      Juegos.share(shareText);
+      return;
+    }
+    if (document.querySelector('.picker')) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'picker';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Invitar a jugar');
+    modal.innerHTML =
+      '<div class="picker-card">' +
+      '<p class="eyebrow"></p>' +
+      '<h2 class="script-title">Invitar a jugar</h2>' +
+      '<p class="body-txt">Si tiene la página abierta, le llega la invitación al instante.</p>' +
+      '<input class="picker-search" type="search" placeholder="Busca un nombre" aria-label="Busca un nombre" autocomplete="off">' +
+      '<ul class="picker-list"><li class="invite-loading">Buscando quién está conectado…</li></ul>' +
+      '<button class="btn btn-link" type="button" data-share>Compartir enlace</button>' +
+      '<button class="btn btn-link" type="button" data-close>Cerrar</button>' +
+      '</div>';
+    modal.querySelector('.eyebrow').textContent = title;
+    const list = modal.querySelector('.picker-list');
+    const search = modal.querySelector('.picker-search');
+    modal.querySelector('[data-close]').addEventListener('click', function () {
+      modal.remove();
+    });
+    modal.querySelector('[data-share]').addEventListener('click', function () {
+      Juegos.share(shareText);
+    });
+    search.addEventListener('input', function () {
+      const term = plain(search.value.trim());
+      list.querySelectorAll('li[data-key]').forEach(function (item) {
+        item.hidden = item.dataset.key.indexOf(term) === -1;
+      });
+    });
+    document.body.appendChild(modal);
+
+    Promise.all([
+      fetch(GUESTS_URL).then(function (r) { return r.json(); }).catch(function () { return []; }),
+      window.Buzon.online()
+    ]).then(function (both) {
+      const online = both[1];
+      const guests = both[0].filter(function (g) { return g.id !== who.id; });
+      const ordered = guests.filter(function (g) { return online.has(g.id); })
+        .concat(guests.filter(function (g) { return !online.has(g.id); }));
+      list.textContent = '';
+
+      ordered.forEach(function (guest) {
+        const isOnline = online.has(guest.id);
+        const item = document.createElement('li');
+        item.dataset.key = plain(guest.name);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'picker-name invite-name' + (isOnline ? ' is-online' : '');
+        const name = document.createElement('span');
+        name.textContent = guest.name;
+        const state = document.createElement('small');
+        state.textContent = isOnline ? 'En línea' : 'Enviar enlace';
+        btn.appendChild(name);
+        btn.appendChild(state);
+
+        btn.addEventListener('click', function () {
+          if (btn.disabled) return;
+          if (!online.has(guest.id)) {
+            Juegos.share(shareText);
+            return;
+          }
+          btn.disabled = true;
+          state.textContent = 'Enviando…';
+          window.Buzon.invite(guest.id, config.game, room).then(function (res) {
+            if (res.ok) {
+              btn.classList.add('is-sent');
+              state.textContent = 'Invitación enviada';
+              return;
+            }
+            btn.disabled = false;
+            if (res.reason === 'wait') {
+              state.textContent = 'Espera un momento';
+            } else {
+              // Gone offline, or the invitation service is down: the link still works
+              online.delete(guest.id);
+              btn.classList.remove('is-online');
+              state.textContent = 'No le llegó · Enviar enlace';
+            }
+          });
+        });
+
+        item.appendChild(btn);
+        list.appendChild(item);
+      });
+      if (search.value) search.dispatchEvent(new Event('input'));
+    });
+  }
 
   // Round badge with the guest's initials; the colour is always the same for the same guest
   function avatar(player) {
@@ -213,7 +319,7 @@ window.Sala = (function () {
       send({ t: 'start' });
     });
     document.getElementById('inviteBtn').addEventListener('click', function () {
-      Juegos.share('Entra a jugar ' + document.title.split(' — ')[0] + ' conmigo en la boda de Cami & Sebas.');
+      openInvite(config, room);
     });
 
     // Needs a name from the guest list before joining

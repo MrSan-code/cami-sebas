@@ -692,6 +692,35 @@
     });
   }
 
+  // Online cards on the hub: how many guests are in each room right now
+  function watchLiveRooms() {
+    const lines = document.querySelectorAll('[data-live]');
+    if (!lines.length) return;
+    const room = (new URLSearchParams(window.location.search).get('sala') || 'boda').toLowerCase();
+
+    function refresh() {
+      const main = document.querySelector('main');
+      if (document.hidden || (main && main.hidden)) return;
+      fetch(API + '/salas?sala=' + encodeURIComponent(room), { cache: 'no-store' })
+        .then(function (r) {
+          return r.ok ? r.json() : null;
+        })
+        .then(function (counts) {
+          lines.forEach(function (el) {
+            const info = counts && counts[el.dataset.live];
+            const n = info ? info.players : 0;
+            el.textContent = !n ? '' : n + (info.playing ? ' jugando ahora' : ' en la sala');
+            el.classList.toggle('is-playing', !!(n && info.playing));
+          });
+        })
+        .catch(function () { /* keep the last counts */ });
+    }
+
+    refresh();
+    setInterval(refresh, 15000);
+    document.addEventListener('visibilitychange', refresh);
+  }
+
   function renderWhoami() {
     const who = me();
     document.querySelectorAll('[data-whoami]').forEach(function (el) {
@@ -889,6 +918,7 @@
     }
     renderWhoami();
     renderHubPodium();
+    watchLiveRooms();
     showRival();
     watchRecord();
 

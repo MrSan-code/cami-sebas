@@ -1,5 +1,9 @@
 // Leaderboard API for the wedding games: /api/podio and /api/puntaje
 import guests from '../../juegos/invitados.json';
+import { Sala, SALA_GAMES } from './sala.js';
+import { Buzon } from './buzon.js';
+
+export { Sala, Buzon };
 
 // Bounds reject scores no real round can produce
 const GAMES = {
@@ -12,6 +16,8 @@ const GAMES = {
   'hora-loca': { min: 1, max: 1600 }
 };
 const TOP = 10;
+// Hub cards poll the room counts; caching keeps the rooms from waking on every poll
+const COUNTS_TTL_SECONDS = 10;
 const GUEST_NAMES = new Map(guests.map((g) => [g.id, g.name]));
 
 function allowedOrigin(request, env) {
@@ -91,8 +97,34 @@ async function submit(request, env) {
   return { status: 200, body: { best, rank: ahead.n + 1, top: withNames(top.results) } };
 }
 
+function roomName(url) {
+  return (url.searchParams.get('sala') || 'boda').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 24) || 'boda';
+}
+
+// How many guests are in each multiplayer room right now
+async function roomCounts(env, ctx, room) {
+  const cache = caches.default;
+  const key = new Request('https://camiysebas.online/api/salas?sala=' + room);
+  const hit = await cache.match(key);
+  if (hit) return hit.json();
+
+  const entries = await Promise.all(SALA_GAMES.map(async (game) => {
+    try {
+      const res = await env.SALAS.get(env.SALAS.idFromName(game + ':' + room)).fetch('https://sala/estado');
+      return [game, await res.json()];
+    } catch (e) {
+      return [game, { players: 0, playing: false }];
+    }
+  }));
+  const counts = Object.fromEntries(entries);
+  ctx.waitUntil(cache.put(key, new Response(JSON.stringify(counts), {
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=' + COUNTS_TTL_SECONDS }
+  })));
+  return counts;
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const origin = allowedOrigin(request, env);
 
@@ -111,7 +143,26 @@ export default {
       });
     }
 
+    // Live invitations between guests: a single mailbox every open page connects to
+    if (url.pathname === '/api/buzon') {
+      if (!origin && env.ALLOW_NO_ORIGIN !== '1') return json({ error: 'forbidden' }, 403, null);
+      return env.BUZON.get(env.BUZON.idFromName('boda')).fetch(request);
+    }
+
+    // Multiplayer rooms: one Durable Object per game and room name, reached over a WebSocket
+    if (url.pathname === '/api/sala') {
+      const game = url.searchParams.get('game');
+      const room = roomName(url);
+      // Browsers always send Origin on a WebSocket handshake; local tests may skip it
+      if (!origin && env.ALLOW_NO_ORIGIN !== '1') return json({ error: 'forbidden' }, 403, null);
+      if (!SALA_GAMES.includes(game)) return json({ error: 'unknown_game' }, 400, origin);
+      return env.SALAS.get(env.SALAS.idFromName(game + ':' + room)).fetch(request);
+    }
+
     try {
+      if (url.pathname === '/api/salas' && request.method === 'GET') {
+        return json(await roomCounts(env, ctx, roomName(url)), 200, origin);
+      }
       if (url.pathname === '/api/podio' && request.method === 'GET') {
         return json(await podium(env), 200, origin);
       }

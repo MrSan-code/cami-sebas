@@ -22,6 +22,8 @@
       if (memoryGuest) localStorage.setItem(GUEST_KEY, JSON.stringify(memoryGuest));
       else localStorage.removeItem(GUEST_KEY);
     } catch (e) { /* storage blocked: identity lasts for this page only */ }
+    // Lets buzon.js reconnect the live invitations under the new name
+    document.dispatchEvent(new CustomEvent('juegos:guest'));
   }
 
   function normalize(s) {

@@ -11,6 +11,17 @@ and stores each guest's best score per game in a D1 database.
 The guest list is `../juegos/invitados.json`. The site reads it for the "¿Quién eres?"
 picker and the Worker bundles it to validate scores, so it is the only place to edit.
 
+## Multiplayer rooms
+
+`WebSocket /api/sala?game=<id>&sala=<room>&guest=<id>` connects a guest to a live room. Each
+room is a Durable Object (`src/sala.js`) that keeps the round in memory; nothing is stored.
+Games: `tira-y-afloja`, `carrera-al-altar`, `cami-o-sebas`, `reflejos`, `pasa-la-cuenta`.
+The questions for "¿Cami o Sebas?" are in `src/preguntas.js`.
+
+Durable Objects need the account to have a workers.dev subdomain. If `wrangler deploy` fails
+with `You need a workers.dev subdomain` (code 10063), open **Workers & Pages** once in the
+Cloudflare dashboard (that creates it), then deploy again.
+
 ## Deploy (once)
 
 Run from this `worker/` folder.
