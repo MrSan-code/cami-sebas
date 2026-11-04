@@ -519,6 +519,9 @@
 
   // ---- Guest identity and shared leaderboard (Cloudflare Worker under /api) ----
   // On a developer machine the API is the local `wrangler dev`; on the real site it is same-origin
+  function isLocalHost() {
+    return /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
+  }
   const API = window.JUEGOS_API || read('api') || (isLocalHost() ? 'http://127.0.0.1:8787/api' : '/api');
   let guestsPromise = null;
   let podiumPromise = null;
