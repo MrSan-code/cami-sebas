@@ -14,7 +14,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="../qr.css?v=2">
+  <link rel="stylesheet" href="../qr.css?v=3">
   <script>
     // Unidentified guests start at the welcome page. If storage is blocked, let them in.
     (function () {
@@ -43,31 +43,26 @@
       <h1 class="sec-title">Busca tu mesa</h1>
     </div>
 
-    <div class="card" id="mine" hidden>
-      <h3 id="mineName"></h3>
-      <p id="mineTable"></p>
-    </div>
-
-    <section class="plan" id="plan">
-      <p class="plan-where" id="planWhere">Toca un nombre para verlo en el plano</p>
-      <svg id="planSvg" viewBox="0 0 300 330" role="img" aria-label="Plano de las mesas"></svg>
-      <p class="plan-legend" id="planLegend" hidden><i></i><span id="planWho"></span></p>
-      <p class="plan-legend" id="planHint">Al entrar, las mesas 2 y 3 quedan a tu izquierda y las mesas 6 y 7 a tu derecha.</p>
-    </section>
-
-    <p class="sec-note" style="text-align:center;margin-bottom:12px" id="searchNote">Escribe tu nombre o apellido</p>
-
     <label class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-3.5-3.5" />
       </svg>
-      <input id="q" type="search" placeholder="Ej. Ana Díaz" autocomplete="off" aria-label="Nombre del invitado">
+      <input id="q" type="search" placeholder="Busca a cualquier invitado" autocomplete="off" aria-label="Nombre del invitado">
     </label>
 
     <div class="results-box" id="resultsBox" hidden>
       <ul class="results" id="results"></ul>
     </div>
+
+    <section class="plan" id="plan">
+      <h3 class="plan-kicker" id="planKicker">El salón</h3>
+      <p class="plan-where" id="planWhere">Toca un nombre para verlo en el plano</p>
+      <svg id="planSvg" viewBox="0 0 300 330" role="img" aria-label="Plano de las mesas"></svg>
+      <p class="plan-legend" id="planLegend" hidden><i></i><span id="planWho"></span></p>
+      <p class="plan-legend" id="planHint">Al entrar, las mesas 2 y 3 quedan a tu izquierda y las mesas 6 y 7 a tu derecha.</p>
+      <button class="plan-back" id="planBack" type="button" hidden>Ver mi puesto</button>
+    </section>
   </main>
 
   <footer>
@@ -184,36 +179,42 @@
         return SEATS[id] ? 'Mesa ' + SEATS[id].table : null;
       }
 
-      // Highlights one guest's seat and table; returns false when they have no table
-      function showOnPlan(id, who) {
+      drawPlan();
+
+      var guest = QR.me();
+      var mySeat = guest && SEATS[guest.id] ? guest.id : null;
+
+      // Highlights one guest's seat and table, and titles the plan with who it is
+      function showOnPlan(id, kicker, who) {
         var svg = document.getElementById('planSvg');
         svg.querySelectorAll('.is-mine').forEach(function (n) { n.classList.remove('is-mine'); });
         var spot = SEATS[id];
-        if (!spot) return false;
         spot.seat.classList.add('is-mine');
         svg.querySelectorAll('[data-table="' + spot.table + '"]').forEach(function (g) { g.classList.add('is-mine'); });
         // Draw the highlighted seat last so it sits above its neighbours
         svg.appendChild(spot.seat);
+        document.getElementById('planKicker').textContent = kicker;
         document.getElementById('planWhere').textContent = 'Mesa ' + spot.table + ' · ' + WHERE[spot.table];
         document.getElementById('planHint').textContent =
           'Al entrar, la mesa ' + spot.table + ' queda ' + FROM_DOOR[spot.table] + '.';
         document.getElementById('planWho').textContent = who;
         document.getElementById('planLegend').hidden = false;
-        return true;
+        // A way back to your own seat while looking at someone else's
+        document.getElementById('planBack').hidden = !mySeat || id === mySeat;
       }
 
-      drawPlan();
+      function showMine() {
+        showOnPlan(mySeat, QR.firstName(guest.name) + ', este es tu puesto', 'Tu puesto');
+      }
 
       /* ---------- The signed-in guest's own table ---------- */
-      var guest = QR.me();
-      if (guest) {
-        document.getElementById('mine').hidden = false;
-        document.getElementById('mineName').textContent = QR.firstName(guest.name) + ', tu mesa es';
-        document.getElementById('mineTable').textContent =
-          tableLabel(guest.id) || 'Pregunta a nuestro equipo en la entrada';
-        document.getElementById('searchNote').textContent = '¿Buscas a alguien más?';
-        showOnPlan(guest.id, 'Tu puesto');
+      if (mySeat) {
+        showMine();
+      } else if (guest) {
+        document.getElementById('planKicker').textContent = QR.firstName(guest.name);
+        document.getElementById('planWhere').textContent = 'Pregunta a nuestro equipo en la entrada';
       }
+      document.getElementById('planBack').addEventListener('click', showMine);
 
       /* ---------- Search any guest ---------- */
       var input = document.getElementById('q');
@@ -237,15 +238,17 @@
           var label = tableLabel(g.id);
           var row = li;
           if (label) {
-            // Seated guests open on the plan
+            // Picking a seated guest closes the list and shows them on the plan
             row = document.createElement('button');
             row.type = 'button';
             row.className = 'seat-btn';
             row.addEventListener('click', function () {
-              showOnPlan(g.id, 'Puesto de ' + QR.firstName(g.name));
-              list.querySelectorAll('.is-shown').forEach(function (b) { b.classList.remove('is-shown'); });
-              row.classList.add('is-shown');
-              document.getElementById('plan').scrollIntoView({ behavior: 'smooth', block: 'start' });
+              if (g.id === mySeat) showMine();
+              else showOnPlan(g.id, g.name, 'Puesto de ' + QR.firstName(g.name));
+              input.value = '';
+              input.blur();
+              box.hidden = true;
+              document.getElementById('plan').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
             li.appendChild(row);
           }

@@ -393,9 +393,35 @@ a { color: inherit; }
 }
 
 .results li:has(.seat-btn) { padding: 0; }
-.results .seat-btn.is-shown { background: rgba(184, 150, 106, .1); }
 
 /* ---------- Floor plan ---------- */
+#resultsBox { margin-bottom: 12px; }
+
+.plan-kicker {
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.plan-back {
+  margin-top: 12px;
+  padding: 9px 18px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--eu-dark);
+  background: #fff;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.plan-back[hidden] { display: none; }
+
 .plan {
   background: #fff;
   border: 1px solid var(--line);
