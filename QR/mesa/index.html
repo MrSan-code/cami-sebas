@@ -52,7 +52,7 @@
       <p class="plan-where" id="planWhere">Toca un nombre para verlo en el plano</p>
       <svg id="planSvg" viewBox="0 0 300 330" role="img" aria-label="Plano de las mesas"></svg>
       <p class="plan-legend" id="planLegend" hidden><i></i><span id="planWho"></span></p>
-      <p class="plan-legend">Izquierda y derecha, entrando al salón.</p>
+      <p class="plan-legend" id="planHint">Al entrar, las mesas 2 y 3 quedan a tu izquierda y las mesas 6 y 7 a tu derecha.</p>
     </section>
 
     <p class="sec-note" style="text-align:center;margin-bottom:12px" id="searchNote">Escribe tu nombre o apellido</p>
@@ -123,6 +123,17 @@
         7: 'A la derecha, cerca de la entrada'
       };
 
+      // How each table sits for someone walking in through the entrance
+      var FROM_DOOR = {
+        1: 'al fondo, frente a ti',
+        2: 'a tu izquierda',
+        3: 'a tu izquierda',
+        4: 'al frente',
+        5: 'al frente',
+        6: 'a tu derecha',
+        7: 'a tu derecha'
+      };
+
       var TABLE_W = 26, TABLE_H = 62, ROUND_R = 18, SEAT_R = 5, SEAT_GAP = 9;
       var SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -184,6 +195,8 @@
         // Draw the highlighted seat last so it sits above its neighbours
         svg.appendChild(spot.seat);
         document.getElementById('planWhere').textContent = 'Mesa ' + spot.table + ' · ' + WHERE[spot.table];
+        document.getElementById('planHint').textContent =
+          'Al entrar, la mesa ' + spot.table + ' queda ' + FROM_DOOR[spot.table] + '.';
         document.getElementById('planWho').textContent = who;
         document.getElementById('planLegend').hidden = false;
         return true;
