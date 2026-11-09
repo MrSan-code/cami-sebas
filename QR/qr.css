@@ -184,12 +184,13 @@ a { color: inherit; }
 /* ---------- Inner page header ---------- */
 .topbar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
+  gap: 8px;
   width: 100%;
   max-width: 520px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 14px 16px 16px;
 }
 
 .back {
@@ -212,7 +213,7 @@ a { color: inherit; }
 
 .back { justify-self: start; }
 
-.topbar-logo { width: 46px; height: auto; display: block; }
+.topbar-logo { width: 28px; height: auto; display: block; justify-self: end; }
 
 .sec-head { text-align: center; margin: 2px 0 18px; }
 
@@ -222,6 +223,14 @@ a { color: inherit; }
   line-height: 1.1;
   color: var(--eu-dark);
   font-weight: 400;
+}
+
+/* Inner pages: the title shares the top bar with the back button and logo */
+.topbar .sec-title {
+  font-size: clamp(30px, 9vw, 40px);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .sec-note {
