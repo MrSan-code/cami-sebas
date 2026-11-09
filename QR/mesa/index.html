@@ -72,8 +72,80 @@
   <script>
     (function () {
       // Table assignments: guest id (from juegos/invitados.json) -> table number.
-      // Leave empty until the seating plan is ready.
-      var TABLES = {};
+      // From the seating plan (UBICACION DE MESA.pdf, 8 Nov 2026).
+      var TABLES = {
+        // Mesa 1
+        'alejandra': 1,
+        'alejandra-ternurita': 1,
+        'ali-milena-diaz': 1,
+        'alvaro-sanchez-diaz': 1,
+        'andres-acosta': 1,
+        'jonathan-sebastian-sanchez': 1,
+        'juan-david-diaz': 1,
+        'julian-david-sanchez-sanabria': 1,
+        'manuel-bernardo-diaz': 1,
+        'manuel-felipe-diaz': 1,
+        'maria-camila-diaz': 1,
+        'nancy-rangel': 1,
+        'verenice-jeanethe-sanabria-gomez': 1,
+        'yesika-katerine-sanchez-sanabria': 1,
+        // Mesa 2
+        'alejandro-bohorquez': 2,
+        'daniela-alvarado-sierra': 2,
+        'juan-camilo-torres': 2,
+        'miguel-angel-garcia-calderon': 2,
+        'oscar-ferney-gallo': 2,
+        'pablo-fernandez': 2,
+        'sebastian-lopez-agudelo': 2,
+        'viviana-paola-uribe-orozco': 2,
+        // Mesa 3
+        'alejandro-arevalo-nocua': 3,
+        'diego-ferreira': 3,
+        'gabriela-leon-celis': 3,
+        'jorge-ulises-useche': 3,
+        'jose-jimenez': 3,
+        'laura-carolina-forigua': 3,
+        'oscar-adrian-bautista-castaneda': 3,
+        'tatiana-arbelaez-parra': 3,
+        'yinna-paola-orjuela-marcelo': 3,
+        // Mesa 4
+        'aura-lucia-rangel': 4,
+        'cesar-rangel': 4,
+        'luis-alexander-sanabria-gomez': 4,
+        'maria-apolonia-perez-nova': 4,
+        'mariana-sanabria-suancha': 4,
+        'melisa': 4,
+        'milena-suancha-verano': 4,
+        'teresa-rangel': 4,
+        // Mesa 5
+        'carlos-garavito': 5,
+        'cindy': 5,
+        'claudia-sanabria-gomez': 5,
+        'daniel-sisa': 5,
+        'dario': 5,
+        'julian-rangel': 5,
+        'laura': 5,
+        'rosa-mireya-sanabria-gomez': 5,
+        'steven-rodriguez-rodriguez': 5,
+        // Mesa 6
+        'daniel': 6,
+        'jesus-david-saavedra': 6,
+        'juan-camilo-franco': 6,
+        'katerine-prada': 6,
+        'lorena-andrea-acuna': 6,
+        'maria-fernanda-chacon': 6,
+        'nathaly-lagos': 6,
+        'santiago-andres-hernandez': 6,
+        // Mesa 7
+        'angie-poveda': 7,
+        'diana-marcela-ruiz': 7,
+        'jhon-mario': 7,
+        'jorge-patarroyo': 7,
+        'maria-jose-pinto': 7,
+        'natalia-rueda': 7,
+        'nicolas-duenas': 7,
+        'valentina-martinez': 7
+      };
 
       function tableLabel(id) {
         return TABLES[id] ? 'Mesa ' + TABLES[id] : null;
@@ -85,7 +157,7 @@
         document.getElementById('mine').hidden = false;
         document.getElementById('mineName').textContent = QR.firstName(guest.name) + ', tu mesa es';
         document.getElementById('mineTable').textContent =
-          tableLabel(guest.id) || 'Muy pronto te la contamos aquí';
+          tableLabel(guest.id) || 'Pregunta a nuestro equipo en la entrada';
         document.getElementById('searchNote').textContent = '¿Buscas a alguien más?';
       }
 
@@ -113,7 +185,7 @@
           var table = document.createElement('span');
           var label = tableLabel(g.id);
           table.className = label ? 'table-no' : 'pending';
-          table.textContent = label || 'Pronto';
+          table.textContent = label || 'Sin mesa';
           li.appendChild(name);
           li.appendChild(table);
           list.appendChild(li);
