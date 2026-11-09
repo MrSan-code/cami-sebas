@@ -3,3 +3,7 @@
 worker/.dev.vars
 worker/.wrangler/
 node_modules/
+
+# Planning exports with guest personal data
+*.pdf
+*wedding-attendees*.xls*
