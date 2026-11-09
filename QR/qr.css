@@ -377,6 +377,70 @@ a { color: inherit; }
 
 .results .results-empty { justify-content: center; text-align: center; font-size: 13px; color: var(--eu); }
 
+.results .seat-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.results li:has(.seat-btn) { padding: 0; }
+.results .seat-btn.is-shown { background: rgba(184, 150, 106, .1); }
+
+/* ---------- Floor plan ---------- */
+.plan {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 14px 14px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.plan-where {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--eu-dark);
+  line-height: 1.35;
+  min-height: 1.35em;
+}
+
+.plan svg { display: block; width: 100%; max-width: 360px; height: auto; margin: 10px auto 0; }
+
+.plan .tbl { fill: var(--cream); stroke: var(--line); stroke-width: 1; transition: fill .3s, stroke .3s; }
+.plan .tbl-no { font-family: 'Montserrat', sans-serif; font-size: 10px; fill: var(--eu); text-anchor: middle; dominant-baseline: central; }
+.plan .seat { fill: #fff; stroke: rgba(74, 122, 88, .45); stroke-width: 1; }
+.plan .room { fill: none; stroke: var(--line); stroke-dasharray: 3 4; }
+.plan .room-note { font-size: 7.5px; letter-spacing: .2em; fill: var(--gold); text-anchor: middle; text-transform: uppercase; }
+
+.plan .is-mine .tbl { fill: rgba(184, 150, 106, .28); stroke: var(--gold); stroke-width: 1.5; }
+.plan .is-mine .tbl-no { fill: var(--eu-deep); font-weight: 500; }
+.plan .seat.is-mine { fill: var(--gold); stroke: var(--eu-dark); stroke-width: 1.5; animation: seat 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+@keyframes seat {
+  50% { transform: scale(1.35); }
+}
+
+.plan-legend { margin-top: 8px; font-size: 11px; color: var(--eu); }
+.plan-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  vertical-align: -1px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid var(--eu-dark);
+}
+
 /* ---------- Footer ---------- */
 footer {
   text-align: center;
@@ -396,4 +460,5 @@ footer .sig { font-family: 'Ephesis', cursive; font-size: 34px; color: var(--eu-
 
 @media (prefers-reduced-motion: reduce) {
   .t-item.now .t-dot { animation: none; }
+  .plan .seat.is-mine { animation: none; }
 }

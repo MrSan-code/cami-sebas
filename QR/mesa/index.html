@@ -48,6 +48,13 @@
       <p id="mineTable"></p>
     </div>
 
+    <section class="plan" id="plan">
+      <p class="plan-where" id="planWhere">Toca un nombre para verlo en el plano</p>
+      <svg id="planSvg" viewBox="0 0 300 312" role="img" aria-label="Plano de las mesas"></svg>
+      <p class="plan-legend" id="planLegend" hidden><i></i><span id="planWho"></span></p>
+      <p class="plan-legend">Izquierda y derecha, mirando hacia la mesa de los novios.</p>
+    </section>
+
     <p class="sec-note" style="text-align:center;margin-bottom:12px" id="searchNote">Escribe tu nombre o apellido</p>
 
     <label class="search">
@@ -71,85 +78,114 @@
   <script src="../qr.js"></script>
   <script>
     (function () {
-      // Table assignments: guest id (from juegos/invitados.json) -> table number.
-      // From the seating plan (UBICACION DE MESA.pdf, 8 Nov 2026).
-      var TABLES = {
-        // Mesa 1
-        'alejandra': 1,
-        'alejandra-ternurita': 1,
-        'ali-milena-diaz': 1,
-        'alvaro-sanchez-diaz': 1,
-        'andres-acosta': 1,
-        'jonathan-sebastian-sanchez': 1,
-        'juan-david-diaz': 1,
-        'julian-david-sanchez-sanabria': 1,
-        'manuel-bernardo-diaz': 1,
-        'manuel-felipe-diaz': 1,
-        'maria-camila-diaz': 1,
-        'nancy-rangel': 1,
-        'verenice-jeanethe-sanabria-gomez': 1,
-        'yesika-katerine-sanchez-sanabria': 1,
-        // Mesa 2
-        'alejandro-bohorquez': 2,
-        'daniela-alvarado-sierra': 2,
-        'juan-camilo-torres': 2,
-        'miguel-angel-garcia-calderon': 2,
-        'oscar-ferney-gallo': 2,
-        'pablo-fernandez': 2,
-        'sebastian-lopez-agudelo': 2,
-        'viviana-paola-uribe-orozco': 2,
-        // Mesa 3
-        'alejandro-arevalo-nocua': 3,
-        'diego-ferreira': 3,
-        'gabriela-leon-celis': 3,
-        'jorge-ulises-useche': 3,
-        'jose-jimenez': 3,
-        'laura-carolina-forigua': 3,
-        'oscar-adrian-bautista-castaneda': 3,
-        'tatiana-arbelaez-parra': 3,
-        'yinna-paola-orjuela-marcelo': 3,
-        // Mesa 4
-        'aura-lucia-rangel': 4,
-        'cesar-rangel': 4,
-        'luis-alexander-sanabria-gomez': 4,
-        'maria-apolonia-perez-nova': 4,
-        'mariana-sanabria-suancha': 4,
-        'melisa': 4,
-        'milena-suancha-verano': 4,
-        'teresa-rangel': 4,
-        // Mesa 5
-        'carlos-garavito': 5,
-        'cindy': 5,
-        'claudia-sanabria-gomez': 5,
-        'daniel-sisa': 5,
-        'dario': 5,
-        'julian-rangel': 5,
-        'laura': 5,
-        'rosa-mireya-sanabria-gomez': 5,
-        'steven-rodriguez-rodriguez': 5,
-        // Mesa 6
-        'daniel': 6,
-        'jesus-david-saavedra': 6,
-        'juan-camilo-franco': 6,
-        'katerine-prada': 6,
-        'lorena-andrea-acuna': 6,
-        'maria-fernanda-chacon': 6,
-        'nathaly-lagos': 6,
-        'santiago-andres-hernandez': 6,
-        // Mesa 7
-        'angie-poveda': 7,
-        'diana-marcela-ruiz': 7,
-        'jhon-mario': 7,
-        'jorge-patarroyo': 7,
-        'maria-jose-pinto': 7,
-        'natalia-rueda': 7,
-        'nicolas-duenas': 7,
-        'valentina-martinez': 7
+      // Floor plan, from the seating chart (UBICACION DE MESA.pdf, 8 Nov 2026).
+      // Long tables list each side top to bottom; round tables give each seat's angle
+      // in degrees (0 = right, 90 = down). Guests not listed here have no table.
+      var PLAN = [
+        { table: 1, round: [112, 48], seats: [
+          ['alvaro-sanchez-diaz', -90], ['verenice-jeanethe-sanabria-gomez', -140],
+          ['yesika-katerine-sanchez-sanabria', 180], ['andres-acosta', 140]] },
+        { table: 1, round: [150, 58], seats: [
+          ['jonathan-sebastian-sanchez', -110], ['maria-camila-diaz', -70],
+          ['alejandra-ternurita', 130], ['julian-david-sanchez-sanabria', 90], ['juan-david-diaz', 50]] },
+        { table: 1, round: [188, 48], seats: [
+          ['nancy-rangel', -125], ['manuel-bernardo-diaz', -80], ['manuel-felipe-diaz', -35],
+          ['alejandra', 10], ['ali-milena-diaz', 50]] },
+        { table: 2, rect: [34, 98],
+          left: ['pablo-fernandez', 'daniela-alvarado-sierra', 'miguel-angel-garcia-calderon', 'alejandro-bohorquez'],
+          right: ['juan-camilo-torres', 'oscar-ferney-gallo', 'sebastian-lopez-agudelo', 'viviana-paola-uribe-orozco'] },
+        { table: 3, rect: [34, 160],
+          left: ['laura-carolina-forigua', 'diego-ferreira', 'alejandro-arevalo-nocua', 'gabriela-leon-celis'],
+          right: ['tatiana-arbelaez-parra', 'jorge-ulises-useche', 'oscar-adrian-bautista-castaneda', 'yinna-paola-orjuela-marcelo'],
+          foot: 'jose-jimenez' },
+        { table: 4, rect: [137, 160],
+          left: ['maria-apolonia-perez-nova', 'luis-alexander-sanabria-gomez', 'milena-suancha-verano', 'mariana-sanabria-suancha'],
+          right: ['aura-lucia-rangel', 'teresa-rangel', 'cesar-rangel', 'melisa'] },
+        { table: 5, rect: [137, 222],
+          left: ['carlos-garavito', 'claudia-sanabria-gomez', 'rosa-mireya-sanabria-gomez', 'laura'],
+          right: ['daniel-sisa', 'dario', 'cindy', 'julian-rangel'],
+          foot: 'steven-rodriguez-rodriguez' },
+        { table: 6, rect: [240, 98],
+          left: ['nathaly-lagos', 'katerine-prada', 'jesus-david-saavedra', 'juan-camilo-franco'],
+          right: ['santiago-andres-hernandez', 'daniel', 'maria-fernanda-chacon', 'lorena-andrea-acuna'] },
+        { table: 7, rect: [240, 160],
+          left: ['diana-marcela-ruiz', 'jorge-patarroyo', 'valentina-martinez', 'maria-jose-pinto'],
+          right: ['jhon-mario', 'natalia-rueda', 'angie-poveda', 'nicolas-duenas'] }
+      ];
+
+      var WHERE = {
+        1: 'La mesa de los novios, al frente',
+        2: 'A la izquierda, cerca de los novios',
+        3: 'A la izquierda, al fondo',
+        4: 'En el centro, cerca de los novios',
+        5: 'En el centro, al fondo',
+        6: 'A la derecha, cerca de los novios',
+        7: 'A la derecha, al fondo'
       };
 
-      function tableLabel(id) {
-        return TABLES[id] ? 'Mesa ' + TABLES[id] : null;
+      var TABLE_W = 26, TABLE_H = 62, ROUND_R = 18, SEAT_R = 5, SEAT_GAP = 9;
+      var SVG_NS = 'http://www.w3.org/2000/svg';
+
+      function el(name, attrs, parent) {
+        var node = document.createElementNS(SVG_NS, name);
+        Object.keys(attrs).forEach(function (k) { node.setAttribute(k, attrs[k]); });
+        if (parent) parent.appendChild(node);
+        return node;
       }
+
+      // guest id -> { table, seat element }, filled while drawing
+      var SEATS = {};
+
+      function drawPlan() {
+        var svg = document.getElementById('planSvg');
+        el('rect', { class: 'room', x: 4, y: 4, width: 292, height: 304, rx: 8 }, svg);
+        PLAN.forEach(function (t) {
+          var group = el('g', { 'data-table': t.table }, svg);
+          var spots = [];
+          if (t.round) {
+            var cx = t.round[0], cy = t.round[1], d = ROUND_R + SEAT_GAP;
+            el('circle', { class: 'tbl', cx: cx, cy: cy, r: ROUND_R }, group);
+            el('text', { class: 'tbl-no', x: cx, y: cy }, group).textContent = t.table;
+            t.seats.forEach(function (s) {
+              var a = s[1] * Math.PI / 180;
+              spots.push([s[0], cx + d * Math.cos(a), cy + d * Math.sin(a)]);
+            });
+          } else {
+            var x = t.rect[0], y = t.rect[1], step = TABLE_H / 4;
+            el('rect', { class: 'tbl', x: x, y: y, width: TABLE_W, height: TABLE_H, rx: 3 }, group);
+            el('text', { class: 'tbl-no', x: x + TABLE_W / 2, y: y + TABLE_H / 2 }, group).textContent = t.table;
+            t.left.forEach(function (id, i) { spots.push([id, x - SEAT_GAP, y + step * (i + .5)]); });
+            t.right.forEach(function (id, i) { spots.push([id, x + TABLE_W + SEAT_GAP, y + step * (i + .5)]); });
+            if (t.foot) spots.push([t.foot, x + TABLE_W / 2, y + TABLE_H + SEAT_GAP]);
+          }
+          spots.forEach(function (p) {
+            var seat = el('circle', { class: 'seat', cx: p[1].toFixed(1), cy: p[2].toFixed(1), r: SEAT_R }, svg);
+            SEATS[p[0]] = { table: t.table, seat: seat };
+          });
+        });
+      }
+
+      function tableLabel(id) {
+        return SEATS[id] ? 'Mesa ' + SEATS[id].table : null;
+      }
+
+      // Highlights one guest's seat and table; returns false when they have no table
+      function showOnPlan(id, who) {
+        var svg = document.getElementById('planSvg');
+        svg.querySelectorAll('.is-mine').forEach(function (n) { n.classList.remove('is-mine'); });
+        var spot = SEATS[id];
+        if (!spot) return false;
+        spot.seat.classList.add('is-mine');
+        svg.querySelectorAll('[data-table="' + spot.table + '"]').forEach(function (g) { g.classList.add('is-mine'); });
+        // Draw the highlighted seat last so it sits above its neighbours
+        svg.appendChild(spot.seat);
+        document.getElementById('planWhere').textContent = 'Mesa ' + spot.table + ' · ' + WHERE[spot.table];
+        document.getElementById('planWho').textContent = who;
+        document.getElementById('planLegend').hidden = false;
+        return true;
+      }
+
+      drawPlan();
 
       /* ---------- The signed-in guest's own table ---------- */
       var guest = QR.me();
@@ -159,6 +195,7 @@
         document.getElementById('mineTable').textContent =
           tableLabel(guest.id) || 'Pregunta a nuestro equipo en la entrada';
         document.getElementById('searchNote').textContent = '¿Buscas a alguien más?';
+        showOnPlan(guest.id, 'Tu puesto');
       }
 
       /* ---------- Search any guest ---------- */
@@ -180,14 +217,28 @@
 
         matches.forEach(function (g) {
           var li = document.createElement('li');
+          var label = tableLabel(g.id);
+          var row = li;
+          if (label) {
+            // Seated guests open on the plan
+            row = document.createElement('button');
+            row.type = 'button';
+            row.className = 'seat-btn';
+            row.addEventListener('click', function () {
+              showOnPlan(g.id, 'Puesto de ' + QR.firstName(g.name));
+              list.querySelectorAll('.is-shown').forEach(function (b) { b.classList.remove('is-shown'); });
+              row.classList.add('is-shown');
+              document.getElementById('plan').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            li.appendChild(row);
+          }
           var name = document.createElement('span');
           name.textContent = g.name;
           var table = document.createElement('span');
-          var label = tableLabel(g.id);
           table.className = label ? 'table-no' : 'pending';
           table.textContent = label || 'Sin mesa';
-          li.appendChild(name);
-          li.appendChild(table);
+          row.appendChild(name);
+          row.appendChild(table);
           list.appendChild(li);
         });
       }
