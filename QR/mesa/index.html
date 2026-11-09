@@ -50,9 +50,9 @@
 
     <section class="plan" id="plan">
       <p class="plan-where" id="planWhere">Toca un nombre para verlo en el plano</p>
-      <svg id="planSvg" viewBox="0 0 300 312" role="img" aria-label="Plano de las mesas"></svg>
+      <svg id="planSvg" viewBox="0 0 300 330" role="img" aria-label="Plano de las mesas"></svg>
       <p class="plan-legend" id="planLegend" hidden><i></i><span id="planWho"></span></p>
-      <p class="plan-legend">Izquierda y derecha, mirando hacia la mesa de los novios.</p>
+      <p class="plan-legend">Izquierda y derecha, entrando al salón.</p>
     </section>
 
     <p class="sec-note" style="text-align:center;margin-bottom:12px" id="searchNote">Escribe tu nombre o apellido</p>
@@ -114,13 +114,13 @@
       ];
 
       var WHERE = {
-        1: 'La mesa de los novios, al frente',
+        1: 'La mesa de los novios, al fondo del salón',
         2: 'A la izquierda, cerca de los novios',
-        3: 'A la izquierda, al fondo',
+        3: 'A la izquierda, cerca de la entrada',
         4: 'En el centro, cerca de los novios',
-        5: 'En el centro, al fondo',
+        5: 'En el centro, cerca de la entrada',
         6: 'A la derecha, cerca de los novios',
-        7: 'A la derecha, al fondo'
+        7: 'A la derecha, cerca de la entrada'
       };
 
       var TABLE_W = 26, TABLE_H = 62, ROUND_R = 18, SEAT_R = 5, SEAT_GAP = 9;
@@ -139,6 +139,10 @@
       function drawPlan() {
         var svg = document.getElementById('planSvg');
         el('rect', { class: 'room', x: 4, y: 4, width: 292, height: 304, rx: 8 }, svg);
+        // The entrance: a gap in the bottom wall, facing the couple's table
+        el('rect', { x: 118, y: 304, width: 64, height: 8, fill: '#fff' }, svg);
+        el('path', { class: 'entry', d: 'M150 324 V312 M145 317 L150 312 L155 317' }, svg);
+        el('text', { class: 'room-note', x: 176, y: 321 }, svg).textContent = 'ENTRADA';
         PLAN.forEach(function (t) {
           var group = el('g', { 'data-table': t.table }, svg);
           var spots = [];
