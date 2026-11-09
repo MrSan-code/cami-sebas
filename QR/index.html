@@ -19,7 +19,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="qr.css?v=3">
+  <link rel="stylesheet" href="qr.css?v=4">
 </head>
 
 <body>
@@ -115,6 +115,7 @@
           text.textContent = 'Qué alegría tenerte aquí. Cuéntanos quién eres.';
         }
         picker.hidden = !!guest;
+        title.closest('.welcome').classList.toggle('is-in', !!guest);
         notMe.hidden = !guest;
         tiles.hidden = !guest;
       }

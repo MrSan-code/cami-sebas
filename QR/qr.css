@@ -35,11 +35,13 @@ a { color: inherit; }
 /* ---------- Hub hero ---------- */
 .hero {
   text-align: center;
-  padding: 48px 16px 28px;
+  padding: 26px 16px 20px;
   background: radial-gradient(120% 80% at 50% 0%, var(--bg) 0%, var(--cream) 70%);
 }
 
-.hero-logo { width: 84px; height: auto; display: block; margin: 0 auto 14px; }
+.hero-logo { width: 54px; height: auto; display: block; margin: 0 auto 10px; }
+
+.hero .wrap { padding: 0; }
 
 .hero-kicker,
 .sec-kicker {
@@ -52,16 +54,17 @@ a { color: inherit; }
 
 .hero-names {
   font-family: 'Ephesis', cursive;
-  font-size: clamp(54px, 16vw, 76px);
+  font-size: clamp(46px, 13vw, 64px);
   line-height: 1;
   color: var(--eu-dark);
-  margin: 10px 0 6px;
+  margin: 6px 0 4px;
   font-weight: 400;
 }
 
 .hero-meta {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 19px;
+  font-size: 17px;
+  line-height: 1.35;
   color: var(--eu);
 }
 
@@ -69,8 +72,8 @@ a { color: inherit; }
 
 /* ---------- Welcome ---------- */
 .welcome {
-  margin: 26px 0 0;
-  padding: 22px 18px;
+  margin: 20px 0 0;
+  padding: 20px 18px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -92,6 +95,24 @@ a { color: inherit; }
 }
 
 .welcome .link-btn { margin-top: -4px; }
+
+/* Signed in: the greeting is one line, no card */
+.welcome.is-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 10px;
+  margin-top: 14px;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.welcome.is-in .welcome-title { font-size: 34px; }
+.welcome.is-in .welcome-text { display: none; }
+.welcome.is-in .link-btn { margin: 0; padding: 4px 0; font-size: 10px; }
 
 .welcome .results-box { text-align: left; }
 
@@ -128,8 +149,8 @@ a { color: inherit; }
 .tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 26px 0 8px;
+  gap: 10px;
+  margin: 14px 0 0;
 }
 
 .tile {
@@ -137,9 +158,9 @@ a { color: inherit; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 118px;
-  padding: 18px 10px;
+  gap: 8px;
+  min-height: 92px;
+  padding: 14px 8px;
   border-radius: 18px;
   background: #fff;
   border: 1px solid var(--line);
@@ -151,7 +172,7 @@ a { color: inherit; }
 
 .tile:active { transform: scale(.97); }
 
-.tile svg { width: 30px; height: 30px; stroke: var(--gold); }
+.tile svg { width: 26px; height: 26px; stroke: var(--gold); }
 
 .tile span {
   font-size: 12px;
@@ -193,11 +214,11 @@ a { color: inherit; }
 
 .topbar-logo { width: 46px; height: auto; display: block; }
 
-.sec-head { text-align: center; margin: 12px 0 26px; }
+.sec-head { text-align: center; margin: 2px 0 18px; }
 
 .sec-title {
   font-family: 'Ephesis', cursive;
-  font-size: 52px;
+  font-size: 46px;
   line-height: 1.1;
   color: var(--eu-dark);
   font-weight: 400;
