@@ -406,6 +406,26 @@ a { color: inherit; }
   color: var(--gold);
   margin-top: 2px;
 }
+/* Fair zones: each one is its own block with a clear title */
+.dishes .zone { padding: 18px 0 4px; border-top: 1px solid var(--gold-l); }
+.dishes .zone:first-child { border-top: 0; padding-top: 4px; }
+.dishes .zone-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
+  font-weight: 500;
+  color: var(--eu-deep);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.dishes .zone-title::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+  margin: 8px auto 0;
+}
+.dishes .zone-text { font-size: 13px; font-family: 'Montserrat', sans-serif; color: var(--eu); line-height: 1.5; margin-bottom: 10px; }
 .dishes .dish-by {
   font-size: 11px;
   font-family: 'Montserrat', sans-serif;
