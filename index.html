@@ -4,6 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    // From the wedding day on (Colombia time) the home page opens the QR hub; ?invitacion keeps the save the date.
+    (function () {
+      if (/[?&]invitacion\b/.test(location.search)) return;
+      try {
+        var today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+        if (today >= '2026-11-14') location.replace('QR/');
+      } catch (e) { /* old browser: stay on the save the date */ }
+    })();
+  </script>
   <title>Sebas & Cami — Save the date</title>
   <meta name="description" content="Save the date para nuestra boda. Reserva la fecha para celebrar con nosotros." />
   <meta property="og:title" content="Save the date" />
