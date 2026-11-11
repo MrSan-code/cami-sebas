@@ -426,6 +426,13 @@ a { color: inherit; }
   margin: 8px auto 0;
 }
 .dishes .zone-text { font-size: 13px; font-family: 'Montserrat', sans-serif; color: var(--eu); line-height: 1.5; margin-bottom: 10px; }
+.dishes .dish-note {
+  display: block;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--gold);
+  margin: 0 0 4px;
+}
 .dishes .dish-by {
   font-size: 11px;
   font-family: 'Montserrat', sans-serif;
