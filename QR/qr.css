@@ -391,6 +391,21 @@ a { color: inherit; }
   margin: 14px 0 6px;
 }
 .dishes .dish-group:first-child { margin-top: 2px; }
+.dishes .dish-bar {
+  font-family: 'Ephesis', cursive;
+  font-size: 30px;
+  color: var(--eu-dark);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.dishes .dish-bar span {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--gold);
+  margin-top: 2px;
+}
 .dishes .dish-by {
   font-size: 11px;
   font-family: 'Montserrat', sans-serif;
