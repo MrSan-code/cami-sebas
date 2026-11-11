@@ -14,7 +14,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="../qr.css?v=5">
+  <link rel="stylesheet" href="../qr.css?v=6">
   <script>
     // Unidentified guests start at the welcome page. If storage is blocked, let them in.
     (function () {
@@ -39,24 +39,90 @@
   </header>
 
   <main class="wrap">
-    <div class="card">
+    <!-- Each course stays a surprise until its time on the wedding day (see script below) -->
+    <section class="card course" data-opens="13:15">
       <h3>Cóctel · 13:15</h3>
-      <p>Pasabocas de sal</p>
-    </div>
-    <div class="card">
+      <p class="teaser">Déjate sorprender.<span>Lo verás aquí a las 13:15.</span></p>
+      <div class="dishes" hidden>
+        <p class="dish-group">Pasabocas de sal</p>
+        <ul>
+          <li><strong>Mini burger de res</strong>Pan brioche artesanal, carne 100% de res, queso americano y vegetales.</li>
+          <li><strong>Montadito de pera caramelizada</strong>Tostada de pan baguette, mezcla de queso crema y queso azul, pera caramelizada y salami italiano.</li>
+          <li><strong>Mini tostada de posta negra</strong></li>
+        </ul>
+      </div>
+    </section>
+    <section class="card course" data-opens="14:40">
       <h3>Almuerzo · 14:40</h3>
-      <p>Por Santo Grill</p>
-    </div>
-    <div class="card">
+      <p class="teaser">Déjate sorprender.<span>Lo verás aquí a las 14:40.</span></p>
+      <div class="dishes" hidden>
+        <ul>
+          <li><strong>Brocheta árabe</strong>Jugosa brocheta de lomo fino de res, servida sobre cremoso hummus de garbanzo con garbanzos fritos. Acompañada de un tabule fresco con granada y almendras.</li>
+        </ul>
+        <p class="dish-by">Por Santo Grill</p>
+      </div>
+    </section>
+    <section class="card course" data-opens="16:00">
       <h3>Feria · desde las 16:00</h3>
-      <p>Zona dulce<br>Zona de café<br>Zona de cócteles</p>
-    </div>
+      <p class="teaser">Déjate sorprender.<span>Lo verás aquí a las 16:00.</span></p>
+      <div class="dishes" hidden>
+        <p class="dish-group">Zona dulce</p>
+        <ul class="dish-names">
+          <li>Mini milhojas</li>
+          <li>Mini cheesecake de chocolate horneado</li>
+          <li>Mini pavlova de fresas</li>
+          <li>Mini tiramisú</li>
+          <li>Alfajores</li>
+          <li>Cucharitas de maracuyá</li>
+        </ul>
+        <p class="dish-group">Zona de café</p>
+        <p class="dish-group">Zona de cócteles</p>
+      </div>
+    </section>
   </main>
 
   <footer>
     <small>Con amor</small>
     <span class="sig">Cami &amp; Sebas</span>
   </footer>
+  <script>
+    (function () {
+      // Reveal each course at its time on the wedding day (Colombia time); ?ver shows everything.
+      var WEDDING_DAY = '2026-11-14';
+      var showAll = /[?&]ver\b/.test(location.search);
+
+      function bogotaNow() {
+        var parts = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'America/Bogota',
+          year: 'numeric', month: '2-digit', day: '2-digit',
+          hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        }).formatToParts(new Date());
+        var get = function (t) { return parts.find(function (p) { return p.type === t; }).value; };
+        return {
+          date: get('year') + '-' + get('month') + '-' + get('day'),
+          minutes: Number(get('hour')) * 60 + Number(get('minute'))
+        };
+      }
+
+      function toMinutes(hhmm) {
+        var p = hhmm.split(':');
+        return Number(p[0]) * 60 + Number(p[1]);
+      }
+
+      function revealCourses() {
+        var now = bogotaNow();
+        document.querySelectorAll('.course').forEach(function (card) {
+          var open = showAll || now.date > WEDDING_DAY ||
+            (now.date === WEDDING_DAY && now.minutes >= toMinutes(card.dataset.opens));
+          card.querySelector('.teaser').hidden = open;
+          card.querySelector('.dishes').hidden = !open;
+        });
+      }
+
+      revealCourses();
+      setInterval(revealCourses, 30000);
+    })();
+  </script>
   <script src="../../buzon.js?v=1" defer></script>
 </body>
 

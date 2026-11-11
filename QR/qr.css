@@ -347,6 +347,58 @@ a { color: inherit; }
   line-height: 1.4;
 }
 
+/* ---------- Menu ---------- */
+.course .teaser { font-style: italic; }
+.course .teaser span {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--eu);
+  margin-top: 4px;
+}
+.dishes ul { list-style: none; padding: 0; margin: 0; }
+.dishes li {
+  font-size: 12.5px;
+  color: var(--eu);
+  line-height: 1.5;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.dishes li:first-child { border-top: 0; padding-top: 4px; }
+.dishes li strong {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--eu-dark);
+  line-height: 1.3;
+}
+.dishes .dish-names li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--eu-dark);
+  padding: 4px 0;
+  border: 0;
+}
+.dishes .dish-group {
+  font-size: 10px;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--eu);
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
+.dishes .dish-group:first-child { margin-top: 2px; }
+.dishes .dish-by {
+  font-size: 11px;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--gold);
+  letter-spacing: .08em;
+  margin-top: 8px;
+}
+
 /* ---------- Table search ---------- */
 .search { position: relative; display: block; margin-bottom: 14px; }
 
