@@ -685,3 +685,20 @@ footer .sig { font-family: 'Ephesis', cursive; font-size: 34px; color: var(--eu-
 .up-item.is-failed .up-state { color: #b5645a; }
 
 .thanks-alt { margin-top: 10px; background: #fff; color: var(--eu-dark); border: 1px solid var(--gold-l); }
+
+.up-row { align-items: center; }
+.up-retry {
+  flex: none;
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--cream);
+  background: var(--eu-dark);
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.up-retry-all { display: block; margin: 6px auto 0; }

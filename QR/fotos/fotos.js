@@ -206,7 +206,8 @@
     if (session.relay) return putRelay(session, blob, start, progress);
     return putDirect(session, blob, start, progress).then(null, function (err) {
       // This browser may be blocked from Google's upload URL; use the relay for this file
-      if (err.message !== 'network') throw err;
+      // A drop while the app is in the background is not a reason to leave the direct path
+      if (err.message !== 'network' || wasHidden || document.hidden) throw err;
       session.relay = true;
       return queryStatus(session).then(function (status) {
         if (status.done) return status;
@@ -215,9 +216,67 @@
     });
   }
 
+  // ---------- Background and app switching ----------
+  // Phones pause the page when the guest switches apps. Failures while hidden do not
+  // count as attempts: the upload waits until the page is visible and resumes from
+  // the byte Drive last kept.
+  var wasHidden = false;
+  var wakeLock = null;
+
+  function whenVisible() {
+    if (!document.hidden) return Promise.resolve();
+    return new Promise(function (resolve) {
+      function onChange() {
+        if (document.hidden) return;
+        document.removeEventListener('visibilitychange', onChange);
+        resolve();
+      }
+      document.addEventListener('visibilitychange', onChange);
+    });
+  }
+
+  // Keeps the screen on while uploading so the phone does not lock mid-video
+  function holdScreen(on) {
+    if (!('wakeLock' in navigator)) return;
+    if (on && !wakeLock && !document.hidden) {
+      navigator.wakeLock.request('screen').then(function (lock) {
+        wakeLock = lock;
+        lock.addEventListener('release', function () { wakeLock = null; });
+      }, function () { /* not allowed: uploads still work */ });
+    } else if (!on && wakeLock) {
+      wakeLock.release();
+    }
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { wasHidden = true; return; }
+    if (running || queue.length) holdScreen(true);
+    // Files that failed for network reasons get another chance when the guest comes back
+    items.forEach(function (item) { if (item.failed && item.autoRetry) retry(item); });
+  });
+
+  // Continues an earlier session when there is one, otherwise opens a new one
+  function openSession(item) {
+    if (!item.session) {
+      return startSession(item.file).then(function (session) {
+        item.session = session;
+        return { session: session, next: 0 };
+      });
+    }
+    return queryStatus(item.session).then(function (status) {
+      return { session: item.session, next: status.done ? null : status.next };
+    }, function (err) {
+      if (retryable(err)) throw err;
+      // Expired or rejected session: start the file again
+      item.session = null;
+      return openSession(item);
+    });
+  }
+
   function uploadFile(item) {
     var file = item.file;
-    return startSession(file).then(function (session) {
+    return openSession(item).then(function (opened) {
+      var session = opened.session;
       var attempt = 0;
       function step(start) {
         return sendFrom(session, file, start, function (sent) {
@@ -232,16 +291,24 @@
         }, recover);
       }
       function recover(err) {
-        if (!retryable(err) || attempt >= RETRIES) throw err;
-        attempt++;
-        return wait(1500 * attempt).then(function () { return queryStatus(session); })
+        if (!retryable(err)) throw err;
+        var paused = wasHidden || document.hidden;
+        wasHidden = false;
+        if (!paused) attempt++;
+        if (attempt > RETRIES) throw err;
+        return whenVisible().then(function () { return wait(1500 * Math.max(1, attempt)); })
+          .then(function () { return queryStatus(session); })
           .then(function (status) { return status.done ? null : step(status.next); }, recover);
       }
-      return step(0);
+      if (opened.next === null) return;
+      item.setProgress(opened.next / file.size);
+      return step(opened.next);
     });
   }
 
   // ---------- Queue and UI ----------
+  var items = [];
+
   function sizeLabel(bytes) {
     if (bytes >= 1024 * 1024 * 1024) return (bytes / 1024 / 1024 / 1024).toFixed(1) + ' GB';
     if (bytes >= 1024 * 1024) return Math.round(bytes / 1024 / 1024) + ' MB';
@@ -251,35 +318,61 @@
   function addItem(file) {
     var li = document.createElement('li');
     li.className = 'up-item';
-    li.innerHTML = '<div class="up-row"><span class="up-name"></span><span class="up-state">En espera</span></div>' +
+    li.innerHTML = '<div class="up-row"><span class="up-name"></span><span class="up-state">En espera</span>' +
+      '<button class="up-retry" type="button" hidden>Reintentar</button></div>' +
       '<div class="up-bar"><span></span></div>';
     li.querySelector('.up-name').textContent = file.name + ' · ' + sizeLabel(file.size);
     uploads.appendChild(li);
     var bar = li.querySelector('.up-bar span');
     var state = li.querySelector('.up-state');
-    return {
+    var retryBtn = li.querySelector('.up-retry');
+    var item = {
       file: file,
+      session: null,
+      failed: false,
+      autoRetry: false,
       setProgress: function (p) {
         bar.style.width = Math.min(100, p * 100).toFixed(1) + '%';
         state.textContent = Math.floor(Math.min(1, p) * 100) + '%';
       },
-      finish: function (ok, message) {
+      waiting: function () {
+        li.classList.remove('is-failed');
+        retryBtn.hidden = true;
+        state.textContent = 'En espera';
+      },
+      finish: function (ok, message, canRetry) {
         li.classList.add(ok ? 'is-done' : 'is-failed');
-        bar.style.width = '100%';
+        if (ok) bar.style.width = '100%';
         state.textContent = ok ? 'Listo' : message;
+        retryBtn.hidden = ok || !canRetry;
       }
     };
+    retryBtn.addEventListener('click', function () { retry(item); });
+    items.push(item);
+    return item;
+  }
+
+  function retry(item) {
+    if (!item.failed) return;
+    item.failed = false;
+    item.autoRetry = false;
+    failed--;
+    item.waiting();
+    queue.push(item);
+    runQueue();
   }
 
   function renderSummary() {
     var pending = queue.length + (running ? 1 : 0);
     summary.hidden = false;
+    retryAll.hidden = true;
     if (pending) {
-      summary.textContent = 'Subiendo… no cierres esta página. Faltan ' + pending + '.';
+      summaryText.textContent = 'Subiendo… Faltan ' + pending + '. Si cambias de app, al volver sigue donde iba.';
     } else if (failed) {
-      summary.textContent = 'Subimos ' + done + '. ' + failed + ' no se pudieron subir; puedes intentarlo de nuevo.';
+      summaryText.textContent = 'Subimos ' + done + '. ' + failed + (failed === 1 ? ' no se pudo subir.' : ' no se pudieron subir.');
+      retryAll.hidden = !items.some(function (i) { return i.failed && i.canRetry; });
     } else {
-      summary.textContent = '¡Gracias! Recibimos ' + done + (done === 1 ? ' archivo.' : ' archivos.');
+      summaryText.textContent = '¡Gracias! Recibimos ' + done + (done === 1 ? ' archivo.' : ' archivos.');
     }
   }
 
@@ -292,23 +385,42 @@
     return 'No se pudo subir';
   }
 
+  // These will fail the same way every time
+  var FINAL_ERRORS = ['too-big', 'bad-type', 'empty', 'unknown-guest'];
+
   function runQueue() {
     if (running) return;
     var item = queue.shift();
-    if (!item) { renderSummary(); return; }
+    if (!item) { holdScreen(false); renderSummary(); return; }
     running = true;
+    holdScreen(true);
     renderSummary();
     (item.file.size ? uploadFile(item) : Promise.reject(new Error('empty'))).then(function () {
       done++;
       item.finish(true);
     }, function (err) {
       failed++;
-      item.finish(false, errorMessage(err));
+      item.failed = true;
+      item.canRetry = FINAL_ERRORS.indexOf(err.message) === -1;
+      item.autoRetry = item.canRetry && retryable(err);
+      item.finish(false, errorMessage(err), item.canRetry);
     }).then(function () {
       running = false;
       runQueue();
     });
   }
+
+  var retryAll = document.createElement('button');
+  retryAll.type = 'button';
+  retryAll.className = 'link-btn up-retry-all';
+  retryAll.textContent = 'Reintentar todos';
+  retryAll.hidden = true;
+  var summaryText = document.createTextNode('');
+  summary.appendChild(summaryText);
+  summary.appendChild(retryAll);
+  retryAll.addEventListener('click', function () {
+    items.forEach(function (item) { if (item.failed && item.canRetry) retry(item); });
+  });
 
   filesInput.addEventListener('change', function () {
     Array.prototype.forEach.call(filesInput.files, function (file) {
