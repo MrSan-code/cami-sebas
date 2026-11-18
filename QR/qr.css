@@ -116,6 +116,25 @@ a { color: inherit; }
 
 .welcome .results-box { text-align: left; }
 
+/* After the wedding: thank-you note with a way back to the games */
+.thanks .welcome-text { margin-bottom: 10px; }
+.thanks-games {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--eu-dark);
+  color: var(--cream);
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+}
+.thanks-games svg { width: 20px; height: 20px; stroke: var(--gold-l); }
+
 .link-btn {
   font: inherit;
   font-size: 11px;
