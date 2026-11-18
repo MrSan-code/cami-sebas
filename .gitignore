@@ -7,3 +7,6 @@ node_modules/
 # Planning exports with guest personal data
 *.pdf
 *wedding-attendees*.xls*
+
+# Apps Script project ids (one per Google account)
+fotos-drive/.clasp*.json

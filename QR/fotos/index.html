@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tus fotos — Cami &amp; Sebas</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f7f3ec">
+  <link rel="icon" type="image/webp" href="../../assets/Logo.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ephesis&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../qr.css?v=11">
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="back" href="../">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      Inicio
+    </a>
+    <h1 class="sec-title">Tus fotos</h1>
+    <img class="topbar-logo" src="../../assets/Logo.webp" alt="Cami &amp; Sebas" width="976" height="1088">
+  </header>
+
+  <main class="wrap">
+    <section class="card upload">
+      <p class="upload-lead">Compártenos las fotos y videos que tomaste en la boda.</p>
+      <p class="upload-note">Se guardan en su calidad original y solo Cami y Sebas pueden verlos.</p>
+
+      <div id="picker" hidden>
+        <p class="upload-step">Primero, ¿quién eres?</p>
+        <label class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input id="who" type="search" placeholder="Escribe tu nombre" autocomplete="off" aria-label="Tu nombre">
+        </label>
+        <div class="results-box" id="whoBox" hidden>
+          <ul class="results" id="whoList"></ul>
+        </div>
+      </div>
+
+      <div id="sender" hidden>
+        <p class="upload-step" id="hello"></p>
+        <label class="upload-btn">
+          <input id="files" type="file" accept="image/*,video/*" multiple>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4M7 9l5-5 5 5" />
+            <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+          </svg>
+          Elegir fotos y videos
+        </label>
+        <button class="link-btn" id="notMe" type="button">¿No eres tú?</button>
+      </div>
+    </section>
+
+    <p class="upload-summary" id="summary" hidden></p>
+    <ul class="uploads" id="uploads"></ul>
+  </main>
+
+  <footer>
+    <small>Con amor</small>
+    <span class="sig">Cami &amp; Sebas</span>
+  </footer>
+
+  <script src="../qr.js?v=2"></script>
+  <script src="fotos.js?v=1"></script>
+</body>
+
+</html>
