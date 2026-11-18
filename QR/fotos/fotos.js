@@ -27,7 +27,6 @@
   var guests = [];
   var queue = [];
   var running = false;
-  var driveIndex = 0;
   var done = 0;
   var failed = 0;
 
@@ -88,39 +87,61 @@
     }).then(function (r) { return r.json(); });
   }
 
+  function wait(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+  }
+
+  // Retries a request a few times, so one dropped request does not skip an account
+  function withRetry(run, tries) {
+    return run().then(null, function (err) {
+      if (tries <= 1) throw err;
+      return wait(1500).then(function () { return withRetry(run, tries - 1); });
+    });
+  }
+
   function freeSpace(drive) {
-    return fetch(drive + '?action=info').then(function (r) { return r.json(); })
-      .then(function (d) { return d.ok ? d.free : 0; });
+    return withRetry(function () {
+      return fetch(drive + '?action=info').then(function (r) { return r.json(); }).then(function (d) {
+        if (!d.ok) throw new Error('info');
+        return d.free;
+      });
+    }, 3);
   }
 
   // Opens an upload session on the first account that has room for this file.
-  // Only "full" and unreachable accounts move on to the next one.
+  // Every file starts again from the first account, so a passing failure never
+  // moves the rest of the uploads to a later one.
   function startSession(file) {
     var guest = QR.me();
     var unreachable = false;
     function tryDrive(i) {
       if (i >= DRIVES.length) return Promise.reject(new Error(unreachable ? 'network' : 'full'));
       var drive = DRIVES[i];
-      return freeSpace(drive).then(null, function () { unreachable = true; return -1; }).then(function (free) {
+      return freeSpace(drive).then(function (free) {
         if (free < file.size) return tryDrive(i + 1);
-        return call(drive, {
-          action: 'start',
-          guest: guest.id,
-          name: file.name,
-          mime: file.type,
-          size: file.size,
-          origin: location.origin
-        }).then(function (res) {
-          if (res.ok) { driveIndex = i; return { drive: drive, url: res.url, total: file.size, relay: false }; }
+        return withRetry(function () {
+          return call(drive, {
+            action: 'start',
+            guest: guest.id,
+            name: file.name,
+            mime: file.type,
+            size: file.size,
+            origin: location.origin
+          });
+        }, 2).then(function (res) {
+          if (res.ok) return { drive: drive, url: res.url, total: file.size, relay: false };
           if (res.error === 'full') return tryDrive(i + 1);
           throw new Error(res.error);
         }, function () {
           unreachable = true;
           return tryDrive(i + 1);
         });
+      }, function () {
+        unreachable = true;
+        return tryDrive(i + 1);
       });
     }
-    return tryDrive(driveIndex);
+    return tryDrive(0);
   }
 
   // ---------- Chunk transport ----------
@@ -177,10 +198,6 @@
   // or rejected session is not
   function retryable(err) {
     return err.message === 'network' || err.message === 'stalled' || /^drive-(5\d\d|429)$/.test(err.message) || err instanceof TypeError;
-  }
-
-  function wait(ms) {
-    return new Promise(function (r) { setTimeout(r, ms); });
   }
 
   function sendFrom(session, file, start, onProgress) {
