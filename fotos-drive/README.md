@@ -36,5 +36,14 @@ and uses the first one with enough free space for the file.
 | cuenta2 | contacto.tundamalabs@gmail.com | `.clasp.cuenta2.json` |
 | cuenta3 | trashtomymail@gmail.com | `.clasp.cuenta3.json` |
 
-Push to one of them with `npx @google/clasp --user cuenta2 -P .clasp.cuenta2.json push --force`.
+clasp refuses a project file whose root is outside its own folder, so push to
+another account from a scratch folder:
+
+```sh
+mkdir -p /tmp/fotos-cuenta2 && cp Code.js appsscript.json /tmp/fotos-cuenta2/
+cp .clasp.cuenta2.json /tmp/fotos-cuenta2/.clasp.json
+cd /tmp/fotos-cuenta2 && npx @google/clasp --user cuenta2 push --force
+npx @google/clasp --user cuenta2 update-deployment <deployment id>
+```
+
 The project files are gitignored; each one only holds that account's script id.
